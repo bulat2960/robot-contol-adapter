@@ -10,6 +10,8 @@ class RobotControlAdapter : public QTcpServer
 private:
     QList<QTcpSocket*> waitSockets;
     QMap<QString, QTcpSocket*> clients;
+
+    QTcpSocket* sceneSocket;
 public:
     RobotControlAdapter();
 public slots:

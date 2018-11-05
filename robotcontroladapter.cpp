@@ -2,6 +2,8 @@
 
 RobotControlAdapter::RobotControlAdapter()
 {
+    sceneSocket = new QTcpSocket(this);
+    sceneSocket->connectToHost("localhost", 1111);
 
     if (this->listen(QHostAddress("localhost"), 5555))
     {
@@ -49,6 +51,11 @@ void RobotControlAdapter::readyRead()
             clients.insert(list[1], socket);
             waitSockets.removeOne(socket);
         }
+        else if (list[0] == "\"id\"") // Если ControlUnit вернул ответ
+        {
+            // Преобразуем в json, отправляем сцене
+            sceneSocket->write("{" + list[0] + " : " + list[1] + "}");
+        }
         else // Если planner отправил нам сообщение в формате "CUnitName: someText"
         {
             // Клиенту с именем CUnitName отправляем someText
@@ -73,4 +80,6 @@ void RobotControlAdapter::deleteSocket()
     // Находим объект-отправитель сигнала на чтение, кастуем в сокет
     QObject* object = QObject::sender();
     QTcpSocket* socket = static_cast<QTcpSocket*>(object);
+
+    // Описать отключение сокета
 }

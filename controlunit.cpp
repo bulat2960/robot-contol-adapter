@@ -20,6 +20,11 @@ void ControlUnit::connectToServer()
 {
     // Стучимся на сервер
     socket->connectToHost("localhost", 5555);
+
+    if (socket->isValid())
+    {
+        qDebug() << "Control Unit" << name << ": connection established";
+    }
 }
 
 void ControlUnit::readyRead()
@@ -31,9 +36,13 @@ void ControlUnit::readyRead()
     {
         socket->write("Name: " + name);
     }
-    else
+    else // Отправляем сообщение на RCA
     {
         qDebug() << "ControlUnit" << name << "received message:" << data;
+
+        QByteArray s1 = "\"id\"";
+        QByteArray s2 = "\"SomeData\"";
+        socket->write(s1 + ":" + s2);
     }
 }
 

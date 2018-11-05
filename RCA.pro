@@ -28,12 +28,14 @@ SOURCES += \
         main.cpp \
     robotcontroladapter.cpp \
     controlunit.cpp \
-    planner.cpp
+    planner.cpp \
+    scene.cpp
 
 HEADERS += \
     robotcontroladapter.h \
     controlunit.h \
-    planner.h
+    planner.h \
+    scene.h
 
 FORMS +=
 

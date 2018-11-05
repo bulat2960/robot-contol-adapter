@@ -26,6 +26,11 @@ void Planner::connectToServer()
 {
     socket->connectToHost("localhost", 5555);
     sendMsgButton->setEnabled(true);
+
+    if (socket->isValid())
+    {
+        qDebug() << "Planner: connection established";
+    }
 }
 
 void Planner::sendMsg()
