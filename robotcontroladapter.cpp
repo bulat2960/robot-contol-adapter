@@ -5,7 +5,7 @@ RobotControlAdapter::RobotControlAdapter()
     sceneSocket = new QTcpSocket(this);
     sceneSocket->connectToHost("localhost", 1111);
 
-    if (this->listen(QHostAddress("localhost"), 5555))
+    if (this->listen(QHostAddress::LocalHost, 5555))
     {
         qDebug() << "Listening RCA";
     }
@@ -28,8 +28,7 @@ void RobotControlAdapter::incomingConnection(int socketDescriptor)
     connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
     connect(socket, SIGNAL(disconnected()), this, SLOT(deleteSocket()));
 
-    // Посылаем сокету запрос его имени
-    socket->write("Name request");
+    qDebug() << waitSockets.size();
 }
 
 void RobotControlAdapter::readyRead()
@@ -42,36 +41,57 @@ void RobotControlAdapter::readyRead()
     QByteArray data = socket->readAll();
     QList<QByteArray> list = data.split(':');
 
-    if (list.size() == 2) // Если был один разделитель-двоеточие
+    if (list.size() == 1) // Команды имен объектов, либо команда 'e'
     {
-        list[1].remove(0, 1); // Удаляем пробел
-        if (list[0] == "Name") // Если ControlUnit отправил нам имя в формате "Name: xxx"
-        {
-            // Добавляем сокет в карту клиентов и удаляем из списка ожидания
-            clients.insert(list[1], socket);
-            waitSockets.removeOne(socket);
-        }
-        else if (list[0] == "\"id\"") // Если ControlUnit вернул ответ
-        {
-            // Преобразуем в json, отправляем сцене
-            sceneSocket->write("{" + list[0] + " : " + list[1] + "}");
-        }
-        else // Если planner отправил нам сообщение в формате "CUnitName: someText"
-        {
-            // Клиенту с именем CUnitName отправляем someText
-            clients[list[0]]->write(list[1]);
-        }
-    }
-    else
-    {
-        if (list[0] == "e") // Если planner отправил нам сообщение "е"
+        if (clients.key(socket) == "p" && list[0] == "e") // Если от планера пришла команда 'e'
         {
             qDebug() << "Planer shutdown";
         }
-        else // Бессмысленная команда, скипаем
+        else if (clients.key(socket) != "p") // Если сообщение - от одного из юнитов
+        {
+            if (clients.find(list[0]) == clients.end()) // Если не нашелся клиент с присланным именем
+            {
+                qDebug() << "Добавляем клиента";
+                // Добавляем клиента, удаляем сокет из списка ожидания
+                clients.insert(list[0], socket);
+                waitSockets.removeOne(socket);
+            }
+            else // Бессмысленная команда
+            {
+                qDebug() << "Senseless command";
+            }
+        }
+        else // Бессмысленная команда
         {
             qDebug() << "Senseless command";
         }
+    }
+    else if (list.size() == 2)
+    {
+        list[1].remove(0, 1); // Удаляем пробел
+
+        if (clients.key(socket) == "p") // Если сокет-отправитель является планером
+        {
+            // Если нашелся клиент, к которому стучится планер && планер не стучится сам к себе
+            if (clients.find(list[0]) != clients.end() && list[0] != "p")
+            {
+                // Пишем юниту
+                clients[list[0]]->write(list[1]);
+            }
+            else // Бессмысленная команда
+            {
+                qDebug() << "Senseless command";
+            }
+        }
+        else // Иначе это один из юнитов
+        {
+            // Отправляем json-пакет сцене
+            sceneSocket->write("{" + list[0] + " : " + list[1] + "}");
+        }
+    }
+    else // Бессмысленная команда
+    {
+        qDebug() << "Senseless command";
     }
 }
 

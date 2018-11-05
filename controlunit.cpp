@@ -25,6 +25,8 @@ void ControlUnit::connectToServer()
     {
         qDebug() << "Control Unit" << name << ": connection established";
     }
+
+    socket->write(name);
 }
 
 void ControlUnit::readyRead()
@@ -32,18 +34,11 @@ void ControlUnit::readyRead()
     // Читаем данные
     QByteArray data = socket->readAll();
 
-    if (data == "Name request") // Если спрашивают имя, говорим его
-    {
-        socket->write("Name: " + name);
-    }
-    else // Отправляем сообщение на RCA
-    {
-        qDebug() << "ControlUnit" << name << "received message:" << data;
+    qDebug() << "ControlUnit" << name << "received message:" << data;
 
-        QByteArray s1 = "\"id\"";
-        QByteArray s2 = "\"SomeData\"";
-        socket->write(s1 + ":" + s2);
-    }
+    QByteArray s1 = "\"id\"";
+    QByteArray s2 = "\"SomeData\"";
+    socket->write(s1 + ":" + s2);
 }
 
 void ControlUnit::deleteSocket()

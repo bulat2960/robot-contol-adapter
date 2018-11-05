@@ -19,18 +19,18 @@ Planner::Planner(QString unitName)
     sendMsgButton = new QPushButton("SendMessage", this);
     sendMsgButton->setGeometry(0, 150, 400, 30);
     connect(sendMsgButton, SIGNAL(clicked()), this, SLOT(sendMsg()));
-    sendMsgButton->setEnabled(false);
 }
 
 void Planner::connectToServer()
 {
     socket->connectToHost("localhost", 5555);
-    sendMsgButton->setEnabled(true);
 
     if (socket->isValid())
     {
         qDebug() << "Planner: connection established";
     }
+
+    socket->write("p");
 }
 
 void Planner::sendMsg()
