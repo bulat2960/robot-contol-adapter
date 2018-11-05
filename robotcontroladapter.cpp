@@ -59,11 +59,11 @@ void RobotControlAdapter::readyRead()
     {
         if (list[0] == "e") // Если planner отправил нам сообщение "е"
         {
-            // Что-то делать с выключением планера
+            qDebug() << "Planer shutdown";
         }
         else // Бессмысленная команда, скипаем
         {
-
+            qDebug() << "Senseless command";
         }
     }
 }
