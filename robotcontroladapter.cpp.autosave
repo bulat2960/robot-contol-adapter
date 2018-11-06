@@ -38,14 +38,14 @@ void RobotControlAdapter::readyRead()
     // read data
     QByteArray data = socket->readAll();
 
-    if (data.size() == 1) // Object names, or shutdown command
+    if (data.size() == 1) // object names, or shutdown command
     {
-        if (planner == nullptr && data == "p") // It's a planner and it's not active yet
+        if (planner == nullptr && data == "p") // it's a planner and it's not active yet
         {
             planner = socket;
             waitSockets.removeOne(socket);
         }
-        else if (planner != nullptr && data == "e") // Shutdown command
+        else if (planner != nullptr && data == "e") // shutdown command
         {
             qDebug() << "Planer shutdown";
         }
@@ -54,12 +54,12 @@ void RobotControlAdapter::readyRead()
             clients.insert(data, socket);
             waitSockets.removeOne(socket);
         }
-        else // Senseless command
+        else // senseless command
         {
-            qDebug() << "Senseless command 3";
+            qDebug() << "Wrong command from the planer";
         }
     }
-    else
+    else // other commands
     {
         QList<QByteArray> list = data.split('|'); // get a list of commands
 
@@ -83,7 +83,7 @@ void RobotControlAdapter::readyRead()
                 }
                 else // not exist
                 {
-                    qDebug() << "Client doesn't exist";
+                    qDebug() << "Client doesn't exists";
                 }
             }
             else // signal from one of the units
