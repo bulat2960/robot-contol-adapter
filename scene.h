@@ -11,11 +11,9 @@ private:
     QTcpSocket* rcaSocket;
 public:
     Scene();
-
 public slots:
     void incomingConnection(int socketDescriptor);
     void readyRead();
-    void deleteSocket();
 };
 
 #endif // SCENE_H

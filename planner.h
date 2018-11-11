@@ -9,7 +9,8 @@ class Planner : public QWidget
     Q_OBJECT
 private:
     QTcpSocket* socket;
-    QPushButton* b;
+    QPushButton* connectButton;
+    QPushButton* disconnectButton;
 
     QTextEdit* textEdit;
     QPushButton* sendMsgButton;
@@ -19,10 +20,10 @@ public:
     Planner(QString name);
 public slots:
     void connectToServer();
-    void readyRead();
-    void deleteSocket();
-
+    void sendName();
     void sendMsg();
+    void readyRead();
+    void disconnectFromServer();
 };
 
 #endif // PLANNER_H

@@ -9,15 +9,17 @@ class ControlUnit : public QWidget
     Q_OBJECT
 private:
     QTcpSocket* socket;
-    QPushButton* b;
+    QPushButton* connectButton;
+    QPushButton* disconnectButton;
 
     QByteArray name;
 public:
     ControlUnit(QString name);
 public slots:
     void connectToServer();
+    void sendName();
     void readyRead();
-    void deleteSocket();
+    void disconnectFromServer();
 };
 
 #endif // CONTROLUNIT_H

@@ -12,14 +12,13 @@ private:
 
     QMap<QString, QTcpSocket*> clients;
     QTcpSocket* planner;
-
     QTcpSocket* sceneSocket;
 public:
     RobotControlAdapter();
 public slots:
     void incomingConnection(int socketDescriptor);
     void readyRead();
-    void deleteSocket();
+    void showAll();
 };
 
 #endif // ROBOTCONTROLADAPTER_H

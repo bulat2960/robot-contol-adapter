@@ -2,47 +2,60 @@
 
 ControlUnit::ControlUnit(QString unitName)
 {
-    // Создаем сокет, устанавливаем имя ControlUnit'a
+    // Create socket, set name
     socket = new QTcpSocket(this);
     name.append(unitName);
 
-    // Необходимые коннекты
+    // Connect signals and slots
+    connect(socket, SIGNAL(connected()), this, SLOT(sendName()));
     connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
-    connect(socket, SIGNAL(disconnected()), this, SLOT(deleteSocket()));
+    //connect(socket, SIGNAL(disconnected()), this, SLOT(disconnectFromServer()));
 
-    // Кнопочка подключения к серверу
-    b = new QPushButton("ControlUnit " + name + ": Connect to Server", this);
-    b->setGeometry(0, 0, 400, 400);
-    connect(b, SIGNAL(clicked()), this, SLOT(connectToServer()));
+    // Connect button
+    connectButton = new QPushButton("ControlUnit " + name + ": Connect to Server", this);
+    connectButton->setGeometry(0, 0, 400, 200);
+    connect(connectButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
+
+    // Disconnect button
+    connectButton = new QPushButton("ControlUnit " + name + ": Disconnect from Server", this);
+    connectButton->setGeometry(0, 200, 400, 200);
+    connect(connectButton, SIGNAL(clicked()), this, SLOT(disconnectFromServer()));
 }
 
 void ControlUnit::connectToServer()
 {
-    // Стучимся на сервер
+    // Try to connect to server
     socket->connectToHost("localhost", 5555);
+}
 
-    if (socket->isValid())
-    {
-        qDebug() << "Control Unit" << name << ": connection established";
-    }
-
+void ControlUnit::sendName()
+{
+    // Check the connection and send our name
+    qDebug() << "Control Unit" << name << ": connection established";
     socket->write(name);
 }
 
 void ControlUnit::readyRead()
 {
-    // Читаем данные
+    // Read what we received
     QByteArray data = socket->readAll();
 
     qDebug() << "ControlUnit" << name << "received message:" << data;
 
-    QByteArray s1 = "\"id\"";
-    QByteArray s2 = "\"SomeData\"";
-    socket->write(s1 + ":" + s2);
+    if (data == "e")
+    {
+        disconnectFromServer();
+    }
+    else
+    {
+        QByteArray s1 = "\"id\"";
+        QByteArray s2 = "\"SomeData\"";
+        socket->write(s1 + ":" + s2);
+    }
 }
 
-void ControlUnit::deleteSocket()
+void ControlUnit::disconnectFromServer()
 {
-    // Удаляем сокет при отключении
-    socket->deleteLater();
+    qDebug() << "Control Unit" << name << ": disconnect";
+    socket->disconnectFromHost();
 }
