@@ -22,7 +22,7 @@ void Scene::incomingConnection(int socketDescriptor)
     qDebug() << "Scene: new incoming connection(RCA)";
 
     // Connect signals and slots
-    connect(rcaSocket, SIGNAL(readyRead()), this, SLOT(readyRead()));
+    connect(rcaSocket, &QTcpSocket::readyRead, this, &Scene::readyRead);
 }
 
 void Scene::readyRead()

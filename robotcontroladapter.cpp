@@ -29,8 +29,8 @@ void RobotControlAdapter::incomingConnection(int socketDescriptor)
     waitSockets.append(socket);
 
     // Connect signals and slots
-    connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
-    connect(socket, SIGNAL(disconnected()), this, SLOT(showAll()));
+    connect(socket, &QTcpSocket::readyRead, this, &RobotControlAdapter::readyRead);
+    connect(socket, &QTcpSocket::disconnected, this, &RobotControlAdapter::showAll);
 }
 
 void RobotControlAdapter::readyRead()

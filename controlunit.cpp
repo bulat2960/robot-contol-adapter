@@ -7,19 +7,18 @@ ControlUnit::ControlUnit(QString unitName)
     name.append(unitName);
 
     // Connect signals and slots
-    connect(socket, SIGNAL(connected()), this, SLOT(sendName()));
-    connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
-    //connect(socket, SIGNAL(disconnected()), this, SLOT(disconnectFromServer()));
+    connect(socket, &QTcpSocket::connected, this, &ControlUnit::sendName);
+    connect(socket, &QTcpSocket::readyRead, this, &ControlUnit::readyRead);
 
     // Connect button
     connectButton = new QPushButton("ControlUnit " + name + ": Connect to Server", this);
     connectButton->setGeometry(0, 0, 400, 200);
-    connect(connectButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
+    connect(connectButton, &QPushButton::clicked, this, &ControlUnit::connectToServer);
 
     // Disconnect button
-    connectButton = new QPushButton("ControlUnit " + name + ": Disconnect from Server", this);
-    connectButton->setGeometry(0, 200, 400, 200);
-    connect(connectButton, SIGNAL(clicked()), this, SLOT(disconnectFromServer()));
+    disconnectButton = new QPushButton("ControlUnit " + name + ": Disconnect from Server", this);
+    disconnectButton->setGeometry(0, 200, 400, 200);
+    connect(disconnectButton, &QPushButton::clicked, this, &ControlUnit::disconnectFromServer);
 }
 
 void ControlUnit::connectToServer()

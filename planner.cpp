@@ -7,19 +7,18 @@ Planner::Planner(QString unitName)
     name.append(unitName);
 
     // Connect signals and slots
-    connect(socket, SIGNAL(connected()), this, SLOT(sendName()));
-    connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
-    //connect(socket, SIGNAL(disconnected()), this, SLOT(disconnectFromServer()));
+    connect(socket, &QTcpSocket::connected, this, &Planner::sendName);
+    connect(socket, &QTcpSocket::readyRead, this, &Planner::readyRead);
 
     // Connect button
     connectButton = new QPushButton("Planner: Connect to Server", this);
     connectButton->setGeometry(0, 0, 400, 100);
-    connect(connectButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
+    connect(connectButton, &QPushButton::clicked, this, &Planner::connectToServer);
 
     // Disconnect button
     disconnectButton = new QPushButton("Planner: Disconnect from Server", this);
     disconnectButton->setGeometry(0, 100, 400, 100);
-    connect(disconnectButton, SIGNAL(clicked()), this, SLOT(disconnectFromServer()));
+    connect(disconnectButton, &QPushButton::clicked, this, &Planner::disconnectFromServer);
 
     // Text edit in which to write a command
     textEdit = new QTextEdit(this);
@@ -29,7 +28,7 @@ Planner::Planner(QString unitName)
     sendMsgButton = new QPushButton("Send Message", this);
     sendMsgButton->setGeometry(0, 250, 400, 30);
     sendMsgButton->setEnabled(false);
-    connect(sendMsgButton, SIGNAL(clicked()), this, SLOT(sendMsg()));
+    connect(sendMsgButton, &QPushButton::clicked, this, &Planner::sendMsg);
 }
 
 void Planner::connectToServer()
