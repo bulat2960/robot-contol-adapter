@@ -4,14 +4,23 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
-class Scene : public QTcpServer
+/**
+ * This is a mock-object of 3DScene
+ * It can only wait for connecting RCA-module and
+ * reading its messages.
+**/
+
+class Scene : public QTcpServer // Simple tcp server
 {
     Q_OBJECT
 private:
+    // Socket for connect to RCA
     QTcpSocket* rcaSocket;
 public:
+    // Basic c-tor
     Scene();
 public slots:
+    // Slots for necessary actions
     void incomingConnection(int socketDescriptor);
     void readyRead();
 };
