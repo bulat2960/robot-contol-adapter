@@ -30,7 +30,6 @@ void RobotControlAdapter::incomingConnection(int socketDescriptor)
 
     // Connect signals and slots
     connect(socket, &QTcpSocket::readyRead, this, &RobotControlAdapter::readyRead);
-    connect(socket, &QTcpSocket::disconnected, this, &RobotControlAdapter::showAll);
 }
 
 void RobotControlAdapter::readyRead()
@@ -44,41 +43,7 @@ void RobotControlAdapter::readyRead()
 
     if (data.size() == 1) // Object names, or shutdown command
     {
-        if (data == "p") // Planner sends his name
-        {
-            if (planner != nullptr && planner->state() == QAbstractSocket::SocketState::UnconnectedState) // Already exist, but disconnected
-            {
-                planner->deleteLater();
-            }
-            planner = socket; // Init or reinit socket
-            waitSockets.removeOne(socket);
-        }
-        else if (data == "e") // Planner sends shutdown command (planner already exists at this moment)
-        {
-            qDebug() << "Planer shutdown";
-            for (const auto& client : clients) // Send shutdown command to all clients
-            {
-                client->write(data);
-            }
-            clients.clear();
-        }
-        else if (socket != planner) // Message not from planner
-        {
-            if (clients.contains(data) == false) // Client isn't in the list and sends us his name
-            {
-                clients.insert(data, socket);
-            }
-            else if (clients.contains(data) == true && clients[data]->state() == QAbstractSocket::SocketState::UnconnectedState) // Exists, but disconnected
-            {
-                clients[data]->deleteLater();
-                clients[data] = socket;
-            }
-            waitSockets.removeOne(socket);
-        }
-        else // Senseless command
-        {
-            qDebug() << "Wrong command from the planer";
-        }
+        processObjectWithoutName(socket, data);
     }
     else // Other commands
     {
@@ -87,37 +52,90 @@ void RobotControlAdapter::readyRead()
         for (int i = 0; i < list.size(); i++)
         {
             QByteArray cmd = list[i];
-            QList<QByteArray> temp = cmd.split(':');
 
-            if (temp.size() != 2) // Command without symbol ':', skip
+            if (socket == planner)
             {
-                qDebug() << "Command without split symbol :";
-                continue;
+                processPlannerCmd(cmd);
             }
-
-            if (socket == planner) // Signal from planner
+            else
             {
-                if (clients.contains(temp[0])) // If client exists
-                {
-                    clients[temp[0]]->write(temp[1]); // Send message to the unit
-                }
-                else // Not exist
-                {
-                    qDebug() << "Client doesn't exists";
-                }
-            }
-            else // Signal from one of the units
-            {
-                // Send message to the scene
-                sceneSocket->write("{" + temp[0] + " : " + temp[1] + "}");
+                processUnitCmd(cmd);
             }
         }
     }
-
-    qDebug() << clients;
 }
 
-void RobotControlAdapter::showAll()
+bool RobotControlAdapter::isConnectedState(QTcpSocket* socket) const
 {
-    qDebug() << clients;
+    return socket->state() == QTcpSocket::SocketState::ConnectedState;
+}
+
+bool RobotControlAdapter::isUnconnectedState(QTcpSocket* socket) const
+{
+    return socket->state() == QTcpSocket::SocketState::UnconnectedState;
+}
+
+void RobotControlAdapter::processPlannerCmd(QByteArray cmd)
+{
+    if (cmd == "e") // Planner sends shutdown command (planner already exists at this moment)
+    {
+        qDebug() << "Planer shutdown";
+        for (const auto& client : clients) // Send shutdown command to all clients
+        {
+            client->write(cmd);
+        }
+        clients.clear();
+    }
+    else // Planner sends other command
+    {
+        QList<QByteArray> temp = cmd.split(':');
+
+        if (temp.size() != 2) // Wrong command
+        {
+            qDebug() << "Wrong command";
+            return;
+        }
+
+        if (clients.contains(temp[0])) // If client exists
+        {
+            qDebug() << "SEND" << temp[0] << temp[1];
+            clients[temp[0]]->write(temp[1]); // Send message to the unit
+        }
+        else // Not exist
+        {
+            qDebug() << "Client doesn't exists";
+        }
+    }
+}
+
+void RobotControlAdapter::processUnitCmd(QByteArray cmd)
+{
+    QList<QByteArray> temp = cmd.split(':');
+    sceneSocket->write("{" + temp[0] + " : " + temp[1] + "}");
+}
+
+void RobotControlAdapter::processObjectWithoutName(QTcpSocket* socket, QByteArray cmd)
+{
+    if (cmd == "p") // Planner sends its name
+    {
+        if (planner != nullptr && isUnconnectedState(planner)) // Already exist, but disconnected
+        {
+            planner->deleteLater();
+        }
+        planner = socket; // Init or reinit socket
+        waitSockets.removeOne(socket);
+    }
+    else // It's from one of units
+    {
+        if (clients.contains(cmd) == false) // Client isn't in the list and sends us his name
+        {
+            clients.insert(cmd, socket);
+        }
+        else if (clients.contains(cmd) == true && isUnconnectedState(clients[cmd])) // Exists, but disconnected
+        {
+            clients[cmd]->deleteLater();
+            clients[cmd] = socket;
+        }
+        waitSockets.removeOne(socket);
+    }
 }
