@@ -34,7 +34,7 @@ public:
     bool isUnconnectedState(QTcpSocket* socket) const;
 
     // Functions for processing new objects
-    void processObjectWithoutName(QTcpSocket* socket, QByteArray name);
+    void processSingleCharCmd(QTcpSocket* socket, QByteArray name);
     void processPlannerCmd(QByteArray cmd);
     void processUnitCmd(QByteArray cmd);
 public slots:

@@ -41,9 +41,9 @@ void RobotControlAdapter::readyRead()
     // Read data
     QByteArray data = socket->readAll();
 
-    if (data.size() == 1) // Object names, or shutdown command
+    if (data.size() == 1 && data != "e") // Object names, or shutdown command, or planner cmd with only 1 symbol, except for command 'e'
     {
-        processObjectWithoutName(socket, data);
+        processSingleCharCmd(socket, data);
     }
     else // Other commands
     {
@@ -79,7 +79,6 @@ void RobotControlAdapter::processPlannerCmd(QByteArray cmd)
 {
     if (cmd == "e") // Planner sends shutdown command (planner already exists at this moment)
     {
-        qDebug() << "Planer shutdown";
         for (const auto& client : clients) // Send shutdown command to all clients
         {
             client->write(cmd);
@@ -92,18 +91,17 @@ void RobotControlAdapter::processPlannerCmd(QByteArray cmd)
 
         if (temp.size() != 2) // Wrong command
         {
-            qDebug() << "Wrong command";
+            qDebug() << "Wrong command" << __FUNCTION__;
             return;
         }
 
         if (clients.contains(temp[0])) // If client exists
         {
-            qDebug() << "SEND" << temp[0] << temp[1];
             clients[temp[0]]->write(temp[1]); // Send message to the unit
         }
         else // Not exist
         {
-            qDebug() << "Client doesn't exists";
+            qDebug() << "Client doesn't exists" << __FUNCTION__;
         }
     }
 }
@@ -114,7 +112,7 @@ void RobotControlAdapter::processUnitCmd(QByteArray cmd)
     sceneSocket->write("{" + temp[0] + " : " + temp[1] + "}");
 }
 
-void RobotControlAdapter::processObjectWithoutName(QTcpSocket* socket, QByteArray cmd)
+void RobotControlAdapter::processSingleCharCmd(QTcpSocket* socket, QByteArray cmd)
 {
     if (cmd == "p") // Planner sends its name
     {
@@ -125,7 +123,7 @@ void RobotControlAdapter::processObjectWithoutName(QTcpSocket* socket, QByteArra
         planner = socket; // Init or reinit socket
         waitSockets.removeOne(socket);
     }
-    else // It's from one of units
+    else if (socket != planner) // It's from one of units
     {
         if (clients.contains(cmd) == false) // Client isn't in the list and sends us his name
         {
@@ -137,5 +135,9 @@ void RobotControlAdapter::processObjectWithoutName(QTcpSocket* socket, QByteArra
             clients[cmd] = socket;
         }
         waitSockets.removeOne(socket);
+    }
+    else
+    {
+        qDebug() << "Unknown command from planner, function" << __FUNCTION__;
     }
 }
