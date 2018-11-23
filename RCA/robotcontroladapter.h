@@ -28,11 +28,19 @@ private:
 public:
     // Basic c-tor
     RobotControlAdapter();
+
+    // Check if socket has a connected state, or unconnected state
+    bool isConnectedState(QTcpSocket* socket) const;
+    bool isUnconnectedState(QTcpSocket* socket) const;
+
+    // Functions for processing new objects
+    void processSingleCharCmd(QTcpSocket* socket, QByteArray name);
+    void processPlannerCmd(QByteArray cmd);
+    void processUnitCmd(QByteArray cmd);
 public slots:
     // Slots for necessary actions
     void incomingConnection(int socketDescriptor);
     void readyRead();
-    void showAll();
 };
 
 #endif // ROBOTCONTROLADAPTER_H
