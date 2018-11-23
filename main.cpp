@@ -1,9 +1,9 @@
 #include <QApplication>
 
-#include "robotcontroladapter.h"
-#include "controlunit.h"
-#include "planner.h"
-#include "scene.h"
+#include "RCA/robotcontroladapter.h"
+#include "Test/ControlUnit/controlunit.h"
+#include "Test/Planner/planner.h"
+#include "Test/Scene/scene.h"
 
 int main(int argc, char *argv[])
 {
