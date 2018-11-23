@@ -25,17 +25,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        main.cpp \
-    robotcontroladapter.cpp \
-    controlunit.cpp \
-    planner.cpp \
-    scene.cpp
+    RCA/robotcontroladapter.cpp \
+    Test/ControlUnit/controlunit.cpp \
+    Test/Planner/planner.cpp \
+    Test/Scene/scene.cpp \
+    main.cpp
 
 HEADERS += \
-    robotcontroladapter.h \
-    controlunit.h \
-    planner.h \
-    scene.h
+    RCA/robotcontroladapter.h \
+    Test/ControlUnit/controlunit.h \
+    Test/Planner/planner.h \
+    Test/Scene/scene.h
 
 FORMS +=
 
