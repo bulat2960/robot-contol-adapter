@@ -18,24 +18,24 @@ void messageHandler(QtMsgType type, const QMessageLogContext& context, const QSt
     switch (type)
     {
         case QtDebugMsg:
-            stream << QString("Date: %1 \n\tDebug: File \"%2\", Function \"%3\", Line %4 \n\t%5 \n\n").
-                      arg(currentDate).arg(context.file).arg(context.function).arg(context.line).arg(msg);
+            stream << QString("%1\nFunction \"%2\", Line %3\nDebug: %4\n\n").
+                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
             break;
         case QtWarningMsg:
-            stream << QString("Date: %1 \n\tWarning: File \"%2\", Function \"%3\", Line %4 \n\t%5 \n\n").
-                      arg(currentDate).arg(context.file).arg(context.function).arg(context.line).arg(msg);
+            stream << QString("%1\nFunction \"%2\", Line %3\nWarning: %4\n\n").
+                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
             break;
         case QtCriticalMsg:
-            stream << QString("Date: %1 \n\tCritical: File \"%2\", Function \"%3\", Line %4 \n\t%5 \n\n").
-                      arg(currentDate).arg(context.file).arg(context.function).arg(context.line).arg(msg);
+            stream << QString("%1\nFunction \"%2\", Line %3\nCritical: %4\n\n").
+                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
             break;
         case QtFatalMsg:
-            stream << QString("Date: %1 \n\tFatal: File \"%2\", Function \"%3\", Line %4 \n\t%5 \n\n").
-                      arg(currentDate).arg(context.file).arg(context.function).arg(context.line).arg(msg);
+            stream << QString("%1\nFunction \"%2\", Line %3\nFatal: %4\n\n").
+                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
             break;
         case QtInfoMsg:
-            stream << QString("Date: %1 \n\tInfo: File \"%2\", Function \"%3\", Line %4 \n\t%5 \n\n").
-                      arg(currentDate).arg(context.file).arg(context.function).arg(context.line).arg(msg);
+            stream << QString("%1\nFunction \"%2\", Line %3\nInfo: %4\n\n").
+                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
             break;
     }
 

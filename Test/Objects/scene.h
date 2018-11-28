@@ -3,6 +3,7 @@
 
 #include <QTcpServer>
 #include <QTcpSocket>
+#include <QTime>
 
 /**
  * This is a mock-object of 3DScene
@@ -16,6 +17,9 @@ class Scene : public QTcpServer // Simple tcp server
 private:
     // Socket for connect to RCA
     QTcpSocket* rcaSocket;
+
+    // Function execution time
+    QTime timer;
 public:
     // Basic c-tor
     Scene();

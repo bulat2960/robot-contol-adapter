@@ -4,6 +4,8 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
+#include <QTime>
+
 /**
  * It's the main object - a server, who can connect to 3DScene,
  * contain and support connections of other clients and planner,
@@ -25,6 +27,9 @@ private:
 
     // 3DScene socket
     QTcpSocket* sceneSocket;
+
+    // Function execution time
+    QTime timer;
 public:
     // Basic c-tor
     RobotControlAdapter();
