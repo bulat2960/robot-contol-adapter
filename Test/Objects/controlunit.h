@@ -3,7 +3,6 @@
 
 #include <QTcpSocket>
 #include <QtWidgets>
-#include <QTime>
 
 /**
  * It's a mock-object of ControlUnit
@@ -24,9 +23,6 @@ private:
 
     // Contains unit name
     QByteArray name;
-
-    // Function execution time
-    QTime timer;
 public:
     // Basic c-tor
     ControlUnit(QString name);

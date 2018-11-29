@@ -3,7 +3,6 @@
 
 #include <QTcpSocket>
 #include <QtWidgets>
-#include <QTime>
 
 /**
  * It's a mock-object of Planner
@@ -27,9 +26,6 @@ private:
 
     // Contains planner name
     QByteArray name;
-
-    // Function execution time
-    QTime timer;
 public:
     // Basic c-tor
     Planner(QString name);
