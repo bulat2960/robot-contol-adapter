@@ -2,6 +2,7 @@
 
 RobotControlAdapter::RobotControlAdapter()
 {
+    QTime timer;
     timer.restart();
 
     planner = nullptr;
@@ -26,6 +27,7 @@ RobotControlAdapter::RobotControlAdapter()
 
 void RobotControlAdapter::incomingConnection(int socketDescriptor)
 {
+    QTime timer;
     timer.restart();
 
     // Create socket and set descriptor
@@ -44,6 +46,7 @@ void RobotControlAdapter::incomingConnection(int socketDescriptor)
 
 void RobotControlAdapter::readyRead()
 {
+    QTime timer;
     timer.restart();
 
     // Find the sender and cast into the socket
@@ -93,6 +96,7 @@ void RobotControlAdapter::processPlannerCmd(QByteArray cmd)
 {
     qInfo() << "Process planner command -" << cmd;
 
+    QTime timer;
     timer.restart();
 
     if (cmd == "e") // Planner sends shutdown command (planner already exists at this moment)
@@ -130,6 +134,7 @@ void RobotControlAdapter::processUnitCmd(QByteArray cmd)
 {
     qInfo() << "Process unit command -" << cmd;
 
+    QTime timer;
     timer.restart();
 
     QList<QByteArray> temp = cmd.split(':');
@@ -140,6 +145,9 @@ void RobotControlAdapter::processUnitCmd(QByteArray cmd)
 
 void RobotControlAdapter::processSingleCharCmd(QTcpSocket* socket, QByteArray cmd)
 {
+    qInfo() << "Process single char command -" << cmd;
+
+    QTime timer;
     timer.restart();
 
     if (cmd == "p") // Planner sends its name

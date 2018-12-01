@@ -27,9 +27,6 @@ private:
 
     // 3DScene socket
     QTcpSocket* sceneSocket;
-
-    // Function execution time
-    QTime timer;
 public:
     // Basic c-tor
     RobotControlAdapter();
