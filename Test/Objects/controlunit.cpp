@@ -1,7 +1,11 @@
 #include "controlunit.h"
 
-ControlUnit::ControlUnit(QString unitName)
+ControlUnit::ControlUnit(QString unitName, QString serverIp, quint16 serverPort)
 {
+    // Set RCA ip and port
+    this->serverIp = serverIp;
+    this->serverPort = serverPort;
+
     // Create socket, set name
     socket = new QTcpSocket(this);
     name.append(unitName);
@@ -11,7 +15,7 @@ ControlUnit::ControlUnit(QString unitName)
     connect(socket, &QTcpSocket::readyRead, this, &ControlUnit::readyRead);
 
     // Connect button
-    connectButton = new QPushButton("ControlUnit " + name + "- Connect to Server", this);
+    connectButton = new QPushButton("ControlUnit " + name + ": Connect to Server", this);
     connectButton->setGeometry(0, 0, 400, 200);
     connect(connectButton, &QPushButton::clicked, this, &ControlUnit::connectToServer);
 
@@ -24,7 +28,7 @@ ControlUnit::ControlUnit(QString unitName)
 void ControlUnit::connectToServer()
 {
     // Try to connect to server
-    socket->connectToHost("localhost", 5555);
+    socket->connectToHost(serverIp, serverPort);
 }
 
 void ControlUnit::sendName()

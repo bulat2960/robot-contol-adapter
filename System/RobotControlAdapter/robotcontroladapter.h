@@ -28,7 +28,7 @@ private:
     // 3DScene socket
     QTcpSocket* sceneSocket;
 public:
-    // Basic c-tor
+    // Basic constructor
     RobotControlAdapter();
 
     // Check if socket has a connected state, or unconnected state

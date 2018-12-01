@@ -13,6 +13,10 @@ class Planner : public QWidget // Inherited from QWidget, can create simple wind
 {
     Q_OBJECT
 private:
+    // RCA ip and port
+    QString serverIp;
+    quint16 serverPort;
+
     // Allows connect to server
     QTcpSocket* socket;
 
@@ -27,8 +31,8 @@ private:
     // Contains planner name
     QByteArray name;
 public:
-    // Basic c-tor
-    Planner(QString name);
+    // Basic constructor
+    Planner(QString name, QString serverIp, quint16 serverPort);
 public slots:
     // Slots for necessary actions
     void connectToServer();

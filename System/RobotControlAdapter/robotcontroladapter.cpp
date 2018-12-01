@@ -13,7 +13,7 @@ RobotControlAdapter::RobotControlAdapter()
     sceneSocket->connectToHost("localhost", 1111);
 
     // Start listening
-    if (this->listen(QHostAddress::LocalHost, 5555))
+    if (this->listen(QHostAddress::Any, 5555))
     {
         qDebug() << "Listening RCA";
     }

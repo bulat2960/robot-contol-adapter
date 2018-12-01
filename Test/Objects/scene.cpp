@@ -1,9 +1,9 @@
 #include "scene.h"
 
-Scene::Scene()
+Scene::Scene(quint16 port)
 {
     // Start listening
-    if (this->listen(QHostAddress("localhost"), 1111))
+    if (this->listen(QHostAddress::Any, port))
     {
         qDebug() << "Listening Scene";
     }

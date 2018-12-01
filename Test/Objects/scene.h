@@ -14,11 +14,12 @@ class Scene : public QTcpServer // Simple tcp server
 {
     Q_OBJECT
 private:
+    quint16 port;
     // Socket for connect to RCA
     QTcpSocket* rcaSocket;
 public:
-    // Basic c-tor
-    Scene();
+    // Basic constructor
+    Scene(quint16 port);
 public slots:
     // Slots for necessary actions
     void incomingConnection(int socketDescriptor);
