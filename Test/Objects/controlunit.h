@@ -14,6 +14,10 @@ class ControlUnit : public QWidget // Inherited from QWidget, can create simple 
 {
     Q_OBJECT
 private:
+    // RCA ip and port
+    QString serverIp;
+    quint16 serverPort;
+
     // Allows connect to server
     QTcpSocket* socket;
 
@@ -24,8 +28,8 @@ private:
     // Contains unit name
     QByteArray name;
 public:
-    // Basic c-tor
-    ControlUnit(QString name);
+    // Basic constructor
+    ControlUnit(QString unitName, QString serverIp, quint16 serverPort);
 public slots:
     // Slots for necessary actions
     void connectToServer();

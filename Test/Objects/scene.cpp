@@ -1,9 +1,9 @@
 #include "scene.h"
 
-Scene::Scene()
+Scene::Scene(quint16 port)
 {
     // Start listening
-    if (this->listen(QHostAddress("localhost"), 1111))
+    if (this->listen(QHostAddress::Any, port))
     {
         qDebug() << "Listening Scene";
     }
@@ -19,7 +19,7 @@ void Scene::incomingConnection(int socketDescriptor)
     rcaSocket = new QTcpSocket(this);
     rcaSocket->setSocketDescriptor(socketDescriptor);
 
-    qDebug() << "Scene: new incoming connection(RCA)";
+    qDebug() << "RCA connected to scene";
 
     // Connect signals and slots
     connect(rcaSocket, &QTcpSocket::readyRead, this, &Scene::readyRead);

@@ -1,7 +1,11 @@
 #include "controlunit.h"
 
-ControlUnit::ControlUnit(QString unitName)
+ControlUnit::ControlUnit(QString unitName, QString serverIp, quint16 serverPort)
 {
+    // Set RCA ip and port
+    this->serverIp = serverIp;
+    this->serverPort = serverPort;
+
     // Create socket, set name
     socket = new QTcpSocket(this);
     name.append(unitName);
@@ -24,13 +28,13 @@ ControlUnit::ControlUnit(QString unitName)
 void ControlUnit::connectToServer()
 {
     // Try to connect to server
-    socket->connectToHost("localhost", 5555);
+    socket->connectToHost(serverIp, serverPort);
 }
 
 void ControlUnit::sendName()
 {
     // Check the connection and send our name
-    qDebug() << "Control Unit" << name << ": connection established";
+    qDebug() << "Control Unit" << name << "- connection established";
     socket->write(name);
 }
 
@@ -39,7 +43,7 @@ void ControlUnit::readyRead()
     // Read what we received
     QByteArray data = socket->readAll();
 
-    qDebug() << "ControlUnit" << name << "received message:" << data;
+    qDebug() << "ControlUnit" << name << "received message -" << data;
 
     if (data == "e")
     {
@@ -56,6 +60,6 @@ void ControlUnit::readyRead()
 
 void ControlUnit::disconnectFromServer()
 {
-    qDebug() << "Control Unit" << name << ": disconnect";
+    qDebug() << "Control Unit" << name << "- disconnect";
     socket->disconnectFromHost();
 }

@@ -1,7 +1,11 @@
 #include "planner.h"
 
-Planner::Planner(QString unitName)
+Planner::Planner(QString unitName, QString serverIp, quint16 serverPort)
 {
+    // Set RCA ip and port
+    this->serverIp = serverIp;
+    this->serverPort = serverPort;
+
     // Create socket, set name
     socket = new QTcpSocket(this);
     name.append(unitName);
@@ -34,14 +38,14 @@ Planner::Planner(QString unitName)
 void Planner::connectToServer()
 {
     // Try to connect to server
-    socket->connectToHost("localhost", 5555);
+    socket->connectToHost(serverIp, serverPort);
     sendMsgButton->setEnabled(true);
 }
 
 void Planner::sendName()
 {
     // Check the connection and send our name
-    qDebug() << "Planner: connection established";
+    qDebug() << "Planner - connection established";
     socket->write("p");
 }
 
@@ -59,13 +63,13 @@ void Planner::sendMsg()
 
 void Planner::readyRead()
 {
-    // Читаем данные
+    // Read data
     QByteArray data = socket->readAll();
 }
 
 void Planner::disconnectFromServer()
 {
-    qDebug() << "Planner: disconnect";
+    qDebug() << "Planner - disconnect";
     socket->disconnectFromHost();
     sendMsgButton->setEnabled(false);
 }
