@@ -1,4 +1,6 @@
-#include <QApplication>
+﻿#include <QApplication>
+#include <QFile>
+#include <QSettings>
 
 #include "Objects/controlunit.h"
 #include "Objects/planner.h"
@@ -8,10 +10,10 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QString serverIp = "localhost";
-    quint16 serverPort = 5555;
-
-    quint16 scenePort = 1111;
+    QSettings settings("D:\\Qt Programs New\\RCA\\config.ini", QSettings::IniFormat);
+    QString serverIp = settings.value("HOSTS/Host").toString();
+    quint16 serverPort = static_cast<quint16>(settings.value("PORTS/Rca").toInt());
+    quint16 scenePort  = static_cast<quint16>(settings.value("PORTS/Scene").toInt());
 
     Scene* scene = new Scene(scenePort);
     Q_UNUSED(scene);
