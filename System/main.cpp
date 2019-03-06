@@ -1,6 +1,7 @@
-#include <QApplication>
+﻿#include <QApplication>
 #include <QFile>
 #include <QDateTime>
+#include <QSettings>
 
 #include <iostream>
 
@@ -63,7 +64,14 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     qInstallMessageHandler(messageHandler);
 
-    RobotControlAdapter* RCA = new RobotControlAdapter;
+    QSettings settings("D:\\Qt Programs New\\RCA\\config.ini", QSettings::IniFormat);
+    QString sceneIp = settings.value("HOSTS/Scene").toString();
+    quint16 rcaPort = static_cast<quint16>(settings.value("PORTS/Rca").toInt());
+    quint16 scenePort  = static_cast<quint16>(settings.value("PORTS/Scene").toInt());
+
+    qDebug() << sceneIp << rcaPort << scenePort;
+
+    RobotControlAdapter* RCA = new RobotControlAdapter(rcaPort, sceneIp, scenePort);
     Q_UNUSED(RCA);
 
     return a.exec();

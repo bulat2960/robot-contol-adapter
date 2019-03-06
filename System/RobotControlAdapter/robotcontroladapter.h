@@ -1,4 +1,4 @@
-#ifndef ROBOTCONTROLADAPTER_H
+﻿#ifndef ROBOTCONTROLADAPTER_H
 #define ROBOTCONTROLADAPTER_H
 
 #include <QTcpServer>
@@ -27,9 +27,12 @@ private:
 
     // 3DScene socket
     QTcpSocket* sceneSocket;
+
+    quint16 serverPort;
+    quint16 scenePort;
 public:
     // Basic constructor
-    RobotControlAdapter();
+    RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint16 scenePort);
 
     // Check if socket has a connected state, or unconnected state
     bool isConnectedState(QTcpSocket* socket) const;
