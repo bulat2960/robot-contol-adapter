@@ -64,17 +64,18 @@ void RobotControlAdapter::readyRead()
     {
         QList<QByteArray> list = data.split('|'); // Get a list of commands
 
-        for (int i = 0; i < list.size(); i++)
+        if  (socket == planner)
         {
-            QByteArray cmd = list[i];
-
-            if (socket == planner)
+            for (int i = 0; i < list.size(); i++)
             {
-                processPlannerCmd(cmd);
+                processPlannerCmd(list[i]);
             }
-            else
+        }
+        else
+        {
+            for (int i = 0; i < list.size(); i++)
             {
-                processUnitCmd(cmd);
+                processUnitCmd(list[i]);
             }
         }
     }
@@ -149,14 +150,14 @@ void RobotControlAdapter::processUnitCmd(QByteArray unitCmd)
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
 
-void RobotControlAdapter::processSingleCharCmd(QTcpSocket* socket, QByteArray cmd)
+void RobotControlAdapter::processSingleCharCmd(QTcpSocket* socket, QByteArray name)
 {
-    qInfo() << "Process single char command -" << cmd;
+    qInfo() << "Process single char command -" << name;
 
     QTime timer;
     timer.restart();
 
-    if (cmd == "p") // Planner sends its name
+    if (name == "p") // Planner sends its name
     {
         if (planner != nullptr && isUnconnectedState(planner)) // Already exist, but disconnected
         {
@@ -167,14 +168,14 @@ void RobotControlAdapter::processSingleCharCmd(QTcpSocket* socket, QByteArray cm
     }
     else if (socket != planner) // It's from one of units
     {
-        if (clients.contains(cmd)) // Client isn't in the list and sends us his name
+        if (clients.contains(name)) // Client isn't in the list and sends us his name
         {
-            clients.insert(cmd, socket);
+            clients.insert(name, socket);
         }
-        else if (clients.contains(cmd) && isUnconnectedState(clients[cmd])) // Exists, but disconnected
+        else if (clients.contains(name) && isUnconnectedState(clients[name])) // Exists, but disconnected
         {
-            clients[cmd]->deleteLater();
-            clients[cmd] = socket;
+            clients[name]->deleteLater();
+            clients[name] = socket;
         }
         waitSockets.removeOne(socket);
     }

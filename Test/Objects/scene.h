@@ -1,4 +1,4 @@
-#ifndef SCENE_H
+﻿#ifndef SCENE_H
 #define SCENE_H
 
 #include <QTcpServer>
@@ -22,7 +22,7 @@ public:
     Scene(quint16 port);
 public slots:
     // Slots for necessary actions
-    void incomingConnection(int socketDescriptor);
+    void incomingConnection(int socketDescriptor) override;
     void readyRead();
 };
 

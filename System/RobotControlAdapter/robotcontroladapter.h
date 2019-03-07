@@ -30,10 +30,7 @@ private:
 
     quint16 serverPort;
     quint16 scenePort;
-public:
-    // Basic constructor
-    RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint16 scenePort);
-
+private:
     // Check if socket has a connected state, or unconnected state
     bool isConnectedState(QTcpSocket* socket) const;
     bool isUnconnectedState(QTcpSocket* socket) const;
@@ -42,9 +39,12 @@ public:
     void processSingleCharCmd(QTcpSocket* socket, QByteArray name);
     void processPlannerCmd(QByteArray cmd);
     void processUnitCmd(QByteArray cmd);
+public:
+    // Basic constructor
+    RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint16 scenePort);
 public slots:
     // Slots for necessary actions
-    void incomingConnection(int socketDescriptor);
+    void incomingConnection(int socketDescriptor) override;
     void readyRead();
 };
 
