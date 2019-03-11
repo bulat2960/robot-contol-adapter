@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication* a = new QApplication(argc, argv);
 
     QSettings settings("D:\\Qt Programs New\\RCA\\config.ini", QSettings::IniFormat);
     QString rcaIp = settings.value("HOSTS/Rca").toString();
@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
     Q_UNUSED(scene);
 
     Planner* planner = new Planner("p", rcaIp, rcaPort);
+    QObject::connect(planner, &Planner::closeAll, a, &QApplication::quit);
     planner->show();
 
     ControlUnit* unit1 = new ControlUnit("t", rcaIp, rcaPort);
@@ -27,5 +28,5 @@ int main(int argc, char *argv[])
     ControlUnit* unit2 = new ControlUnit("f", rcaIp, rcaPort);
     unit2->show();
 
-    return a.exec();
+    return a->exec();
 }

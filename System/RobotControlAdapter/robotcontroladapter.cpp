@@ -107,6 +107,8 @@ void RobotControlAdapter::processPlannerCmd(QByteArray plannerCmd)
             client->write(plannerCmd);
         }
         clients.clear();
+
+        emit closeAll();
     }
     else // Planner sends other command
     {

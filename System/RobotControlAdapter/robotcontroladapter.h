@@ -3,6 +3,7 @@
 
 #include <QTcpServer>
 #include <QTcpSocket>
+#include <QEventLoop>
 
 #include <QTime>
 
@@ -46,6 +47,8 @@ public slots:
     // Slots for necessary actions
     void incomingConnection(int socketDescriptor) override;
     void readyRead();
+signals:
+    void closeAll();
 };
 
 #endif // ROBOTCONTROLADAPTER_H

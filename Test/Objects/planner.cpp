@@ -58,6 +58,8 @@ void Planner::sendMsg()
     if (arr == "e")
     {
         disconnectFromServer();
+        socket->waitForBytesWritten(1000);
+        emit closeAll();
     }
 }
 
