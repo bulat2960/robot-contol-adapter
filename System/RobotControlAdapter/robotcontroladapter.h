@@ -28,9 +28,6 @@ private:
 
     // 3DScene socket
     QTcpSocket* sceneSocket;
-
-    quint16 serverPort;
-    quint16 scenePort;
 private:
     // Check if socket has a connected state, or unconnected state
     bool isConnectedState(QTcpSocket* socket) const;
@@ -43,7 +40,7 @@ private:
 public:
     // Basic constructor
     RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint16 scenePort);
-public slots:
+private slots:
     // Slots for necessary actions
     void incomingConnection(int socketDescriptor) override;
     void readyRead();
