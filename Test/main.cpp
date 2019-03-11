@@ -10,7 +10,9 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QSettings settings("D:\\Qt Programs New\\RCA\\config.ini", QSettings::IniFormat);
+    QString configPath = (argc < 2) ? "D:\\Qt Programs New\\RCA\\config.ini" : argv[1];
+
+    QSettings settings(configPath, QSettings::IniFormat);
     QString rcaIp = settings.value("HOSTS/Rca").toString();
     quint16 rcaPort = static_cast<quint16>(settings.value("PORTS/Rca").toInt());
     quint16 scenePort  = static_cast<quint16>(settings.value("PORTS/Scene").toInt());
