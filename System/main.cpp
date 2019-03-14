@@ -41,7 +41,9 @@ public:
 private:
     LoggerSingleton() {}
     LoggerSingleton(const LoggerSingleton& obj) = delete;
+    LoggerSingleton(LoggerSingleton&& obj) = delete;
     LoggerSingleton& operator=(const LoggerSingleton& obj) = delete;
+    LoggerSingleton& operator=(LoggerSingleton&& obj) = delete;
 };
 
 void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
