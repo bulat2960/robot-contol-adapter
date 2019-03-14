@@ -2,22 +2,48 @@
 #include <QFile>
 #include <QDateTime>
 #include <QSettings>
+#include <QDir>
 
 #include <iostream>
 
 #include "RobotControlAdapter/robotcontroladapter.h"
 
-void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
+class LoggerSingleton
 {
-    // Create and open file
-    QFile file("D:/Qt Programs New/RCA/log.txt");
-    if (!file.open(QIODevice::Append | QIODevice::Text))
+public:
+    QFile file;
+public:
+    static LoggerSingleton& instance()
     {
-        return;
+        static LoggerSingleton obj;
+        return obj;
     }
 
+    void setFilename(QString filename)
+    {
+        file.setFileName(filename);
+        file.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+    }
+
+    QFile& fileRef()
+    {
+        return file;
+    }
+
+    ~LoggerSingleton()
+    {
+        file.close();
+    }
+private:
+    LoggerSingleton() {}
+    LoggerSingleton(const LoggerSingleton& obj) = delete;
+    LoggerSingleton& operator=(const LoggerSingleton& obj) = delete;
+};
+
+void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
+{
     // Create file and console streams
-    QTextStream fileStream(&file);
+    QTextStream fileStream(&LoggerSingleton::instance().fileRef());
     QTextStream consoleStream(stdout);
 
     // Set current date and time
@@ -54,22 +80,21 @@ void messageHandler(QtMsgType type, const QMessageLogContext& context, const QSt
 
     fileStream.flush();
     consoleStream.flush();
-
-    file.flush();
-    file.close();
 }
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    qInstallMessageHandler(messageHandler);
 
     QSettings settings("D:\\Qt Programs New\\RCA\\config.ini", QSettings::IniFormat);
     QString sceneIp = settings.value("HOSTS/Scene").toString();
     quint16 rcaPort = static_cast<quint16>(settings.value("PORTS/Rca").toInt());
     quint16 scenePort  = static_cast<quint16>(settings.value("PORTS/Scene").toInt());
 
-    qDebug() << sceneIp << rcaPort << scenePort;
+    QString log = QDir::homePath() + "/" + settings.value("FILES/Log").toString();
+    LoggerSingleton::instance().setFilename(log);
+
+    qInstallMessageHandler(messageHandler);
 
     RobotControlAdapter* RCA = new RobotControlAdapter(rcaPort, sceneIp, scenePort);
     Q_UNUSED(RCA);
