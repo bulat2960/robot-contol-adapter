@@ -10,7 +10,7 @@
 
 class LoggerSingleton
 {
-public:
+private:
     QFile file;
 public:
     static LoggerSingleton& instance()
@@ -22,7 +22,11 @@ public:
     void setFilename(QString filename)
     {
         file.setFileName(filename);
-        file.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+
+        if (!file.isOpen())
+        {
+            file.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+        }
     }
 
     QFile& fileRef()
