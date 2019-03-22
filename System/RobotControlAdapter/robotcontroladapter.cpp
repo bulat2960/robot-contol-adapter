@@ -52,6 +52,9 @@ void RobotControlAdapter::slotRead()
     QObject* object = QObject::sender();
     QTcpSocket* socket = static_cast<QTcpSocket*>(object);
 
+    // Disconnect from this object... (*)
+    disconnect(socket, &QTcpSocket::readyRead, this, &RobotControlAdapter::slotRead);
+
     // Read data
     QByteArray data = socket->readAll();
 
@@ -69,21 +72,23 @@ void RobotControlAdapter::slotRead()
             plannerConnector = new PlannerConnector(socket);
             waitSockets.removeOne(socket);
         }
+        connect(socket, &QTcpSocket::readyRead, plannerConnector, &PlannerConnector::slotReceive);
     }
     else
     {
+        ControlUnitConnector* unitConnector = new ControlUnitConnector(socket, data);
         if (unitConnectors.contains(data))
         {
             qInfo() << "Unit connector exists";
             unitConnectors[data]->deleteLater();
-            unitConnectors[data] = new ControlUnitConnector(socket, data);
+            unitConnectors[data] = unitConnector;
         }
         else
         {
             qInfo() << "Create new unit connector";
-            ControlUnitConnector* newUnit = new ControlUnitConnector(socket, data);
-            unitConnectors.insert(data, newUnit);
+            unitConnectors.insert(data, unitConnector);
         }
+        connect(socket, &QTcpSocket::readyRead, unitConnector, &ControlUnitConnector::slotReceive);
     }
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";

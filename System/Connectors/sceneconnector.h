@@ -3,7 +3,7 @@
 
 #include <QTcpSocket>
 
-class SceneConnector : QObject
+class SceneConnector : public QObject
 {
     Q_OBJECT
 private:

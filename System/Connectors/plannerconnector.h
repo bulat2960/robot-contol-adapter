@@ -18,6 +18,9 @@ public:
     PlannerConnector& operator=(PlannerConnector&&) = delete;
 
     ~PlannerConnector();
+
+public slots:
+    void slotReceive();
 };
 
 #endif // PLANNERCONNECTOR_H

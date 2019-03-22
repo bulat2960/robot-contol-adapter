@@ -22,8 +22,6 @@ public:
 
 public slots:
     void slotSend(QByteArray msg);
-
-private slots:
     void slotReceive();
 
 signals:

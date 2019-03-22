@@ -10,3 +10,8 @@ PlannerConnector::~PlannerConnector()
     socket->disconnectFromHost();
     socket->deleteLater();
 }
+
+void PlannerConnector::slotReceive()
+{
+    QByteArray msg = socket->readAll();
+}
