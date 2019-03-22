@@ -1,6 +1,7 @@
-#include "sceneconnector.h"
+﻿#include "sceneconnector.h"
 
-SceneConnector::SceneConnector()
+SceneConnector::SceneConnector(QString ip, quint16 port)
 {
-
+    socket = new QTcpSocket(this);
+    socket->connectToHost(ip, port);
 }

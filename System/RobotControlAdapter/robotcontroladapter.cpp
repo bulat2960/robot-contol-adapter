@@ -5,12 +5,11 @@ RobotControlAdapter::RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint
     QTime timer;
     timer.restart();
 
-    planner = nullptr;
+    plannerConnector = nullptr;
 
     // Init scene socket and try to connect
-    qInfo() << "Create scene socket";
-    sceneSocket = new QTcpSocket(this);
-    sceneSocket->connectToHost(sceneIp, scenePort);
+    qInfo() << "Create scene connector";
+    sceneConnector = new SceneConnector(sceneIp, scenePort);
 
     // Start listening
     if (this->listen(QHostAddress::Any, rcaPort))
@@ -39,12 +38,12 @@ void RobotControlAdapter::incomingConnection(int socketDescriptor)
     waitSockets.append(socket);
 
     // Connect signals and slots
-    connect(socket, &QTcpSocket::readyRead, this, &RobotControlAdapter::readyRead);
+    connect(socket, &QTcpSocket::readyRead, this, &RobotControlAdapter::slotRead);
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
 
-void RobotControlAdapter::readyRead()
+void RobotControlAdapter::slotRead()
 {
     QTime timer;
     timer.restart();
@@ -56,44 +55,41 @@ void RobotControlAdapter::readyRead()
     // Read data
     QByteArray data = socket->readAll();
 
-    if (data.size() == 1 && data != "e") // Object names, or shutdown command, or planner cmd with only 1 symbol, except for command 'e'
+    if (data == "p")
     {
-        processSingleCharCmd(socket, data);
-    }
-    else // Other commands
-    {
-        QList<QByteArray> list = data.split('|'); // Get a list of commands
-
-        if  (socket == planner)
+        if (plannerConnector != nullptr)
         {
-            for (int i = 0; i < list.size(); i++)
-            {
-                processPlannerCmd(list[i]);
-            }
+            qInfo() << "Planner connector exists";
+            plannerConnector->deleteLater();
+            plannerConnector = nullptr;
         }
         else
         {
-            for (int i = 0; i < list.size(); i++)
-            {
-                processUnitCmd(list[i]);
-            }
+            qInfo() << "Create planner connector";
+            plannerConnector = new PlannerConnector(socket);
+            waitSockets.removeOne(socket);
+        }
+    }
+    else
+    {
+        if (unitConnectors.contains(data))
+        {
+            qInfo() << "Unit connector exists";
+            unitConnectors[data]->deleteLater();
+            unitConnectors[data] = new ControlUnitConnector(socket, data);
+        }
+        else
+        {
+            qInfo() << "Create new unit connector";
+            ControlUnitConnector* newUnit = new ControlUnitConnector(socket, data);
+            unitConnectors.insert(data, newUnit);
         }
     }
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
 
-bool RobotControlAdapter::isConnectedState(QTcpSocket* socket) const
-{
-    return socket->state() == QTcpSocket::SocketState::ConnectedState;
-}
-
-bool RobotControlAdapter::isUnconnectedState(QTcpSocket* socket) const
-{
-    return socket->state() == QTcpSocket::SocketState::UnconnectedState;
-}
-
-void RobotControlAdapter::processPlannerCmd(QByteArray plannerCmd)
+/* RobotControlAdapter::processPlannerCmd(QByteArray plannerCmd)
 {
     qInfo() << "Process planner command -" << plannerCmd;
 
@@ -187,4 +183,4 @@ void RobotControlAdapter::processSingleCharCmd(QTcpSocket* socket, QByteArray na
     }
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
-}
+}*/

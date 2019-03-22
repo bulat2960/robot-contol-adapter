@@ -3,10 +3,13 @@
 
 #include <QTcpSocket>
 
-class SceneConnector
+class SceneConnector : QObject
 {
+    Q_OBJECT
+private:
+    QTcpSocket* socket;
 public:
-    SceneConnector();
+    SceneConnector(QString ip, quint16 port);
 };
 
 #endif // SCENECONNECTOR_H

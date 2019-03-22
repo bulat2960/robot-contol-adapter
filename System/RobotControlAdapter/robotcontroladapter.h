@@ -3,9 +3,11 @@
 
 #include <QTcpServer>
 #include <QTcpSocket>
-#include <QEventLoop>
-
 #include <QTime>
+
+#include "Connectors/controlunitconnector.h"
+#include "Connectors/plannerconnector.h"
+#include "Connectors/sceneconnector.h"
 
 /**
  * It's the main object - a server, who can connect to 3DScene,
@@ -21,29 +23,28 @@ private:
     QList<QTcpSocket*> waitSockets;
 
     // Clients(units) with name
-    QMap<QString, QTcpSocket*> clients;
+    QMap<QString, ControlUnitConnector*> unitConnectors;
 
-    // Planner socket
-    QTcpSocket* planner;
+    // Planner
+    PlannerConnector* plannerConnector;
 
     // 3DScene socket
-    QTcpSocket* sceneSocket;
-private:
-    // Check if socket has a connected state, or unconnected state
-    bool isConnectedState(QTcpSocket* socket) const;
-    bool isUnconnectedState(QTcpSocket* socket) const;
+    SceneConnector* sceneConnector;
 
-    // Functions for processing new objects
-    void processSingleCharCmd(QTcpSocket* socket, QByteArray name);
-    void processPlannerCmd(QByteArray cmd);
-    void processUnitCmd(QByteArray cmd);
 public:
     // Basic constructor
     RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint16 scenePort);
+
+    RobotControlAdapter(const RobotControlAdapter&) = delete;
+    RobotControlAdapter& operator=(const RobotControlAdapter&) = delete;
+    RobotControlAdapter(RobotControlAdapter&&) = delete;
+    RobotControlAdapter& operator=(RobotControlAdapter&&) = delete;
+
 private slots:
     // Slots for necessary actions
     void incomingConnection(int socketDescriptor) override;
-    void readyRead();
+    void slotRead();
+
 signals:
     void closeAll();
 };
