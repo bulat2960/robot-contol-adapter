@@ -4,6 +4,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QTime>
+#include <QEventLoop>
 
 #include "Connectors/controlunitconnector.h"
 #include "Connectors/plannerconnector.h"
@@ -45,8 +46,11 @@ private slots:
     void incomingConnection(int socketDescriptor) override;
     void slotRead();
 
+public slots:
+    void slotParseCmd(QByteArray cmd);
+
 signals:
-    void closeAll();
+    void signalCloseAll();
 };
 
 #endif // ROBOTCONTROLADAPTER_H

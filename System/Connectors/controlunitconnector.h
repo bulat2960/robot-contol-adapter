@@ -22,10 +22,11 @@ public:
 
 public slots:
     void slotSend(QByteArray msg);
-    void slotReceive();
+    void slotRead();
 
 signals:
     void signalMsgReceived(QByteArray msg);
+    void signalUnitClosed();
 };
 
 #endif // CONTROLUNITCONNECTOR_H

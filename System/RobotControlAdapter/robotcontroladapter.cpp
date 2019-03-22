@@ -62,25 +62,29 @@ void RobotControlAdapter::slotRead()
     {
         if (plannerConnector != nullptr)
         {
-            qInfo() << "Planner connector exists";
+            qInfo() << "Planner connector exists, recreate";
             plannerConnector->deleteLater();
             plannerConnector = nullptr;
+            plannerConnector = new PlannerConnector(socket);
         }
         else
         {
-            qInfo() << "Create planner connector";
+            qInfo() << "Create new planner connector";
             plannerConnector = new PlannerConnector(socket);
-            waitSockets.removeOne(socket);
         }
-        connect(socket, &QTcpSocket::readyRead, plannerConnector, &PlannerConnector::slotReceive);
+        waitSockets.removeOne(socket);
+
+        // (*) ... and connect to planner connector
+        connect(socket, &QTcpSocket::readyRead, plannerConnector, &PlannerConnector::slotRead);
     }
     else
     {
         ControlUnitConnector* unitConnector = new ControlUnitConnector(socket, data);
         if (unitConnectors.contains(data))
         {
-            qInfo() << "Unit connector exists";
+            qInfo() << "Unit connector exists, recreate";
             unitConnectors[data]->deleteLater();
+            unitConnectors[data] = nullptr;
             unitConnectors[data] = unitConnector;
         }
         else
@@ -88,10 +92,20 @@ void RobotControlAdapter::slotRead()
             qInfo() << "Create new unit connector";
             unitConnectors.insert(data, unitConnector);
         }
-        connect(socket, &QTcpSocket::readyRead, unitConnector, &ControlUnitConnector::slotReceive);
+        waitSockets.removeOne(socket);
+
+        // (*) ... and connect to unit connector
+        connect(socket, &QTcpSocket::readyRead, unitConnector, &ControlUnitConnector::slotRead);
+        connect(plannerConnector, &PlannerConnector::signalClose, unitConnector, &ControlUnitConnector::slotSend);
+        connect(unitConnector, &ControlUnitConnector::signalUnitClosed, &ControlUnitConnector::deleteLater);
     }
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
+}
+
+void RobotControlAdapter::slotParseCmd(QByteArray cmd)
+{
+
 }
 
 /* RobotControlAdapter::processPlannerCmd(QByteArray plannerCmd)

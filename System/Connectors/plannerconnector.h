@@ -14,13 +14,17 @@ public:
 
     PlannerConnector(const PlannerConnector&) = delete;
     PlannerConnector& operator=(const PlannerConnector&) = delete;
-    PlannerConnector(PlannerConnector&&)  = delete;
+    PlannerConnector(PlannerConnector&&) = delete;
     PlannerConnector& operator=(PlannerConnector&&) = delete;
 
     ~PlannerConnector();
 
 public slots:
-    void slotReceive();
+    void slotRead();
+
+signals:
+    void signalMsgReceived(QByteArray msg);
+    void signalClose(QByteArray msg);
 };
 
 #endif // PLANNERCONNECTOR_H

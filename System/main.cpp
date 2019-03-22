@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
     qDebug() << sceneIp << rcaPort << scenePort;
 
     RobotControlAdapter* RCA = new RobotControlAdapter(rcaPort, sceneIp, scenePort);
-    QObject::connect(RCA, &RobotControlAdapter::closeAll, a, QApplication::quit);
+    QObject::connect(RCA, &RobotControlAdapter::signalCloseAll, a, QApplication::quit);
 
     return a->exec();
 }
