@@ -11,7 +11,8 @@
 class LoggerSingleton
 {
 private:
-    QFile file;
+    QTextStream* fileStream;
+    QTextStream* consoleStream;
 public:
     static LoggerSingleton& instance()
     {
@@ -19,73 +20,77 @@ public:
         return obj;
     }
 
-    void setFilename(QString filename)
+    void initStreams(QString name)
     {
-        file.setFileName(filename);
-
-        if (!file.isOpen())
+        QFile* file = new QFile(name);
+        if (!file->isOpen())
         {
-            file.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+            file->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
         }
+
+        fileStream = new QTextStream(file);
+        consoleStream = new QTextStream(stdout);
     }
 
-    QFile& fileRef()
+    QTextStream& getFileStream() const
     {
-        return file;
+        return *fileStream;
     }
 
-    ~LoggerSingleton()
+    QTextStream& getConsoleStream() const
     {
-        file.close();
+        return *consoleStream;
     }
 private:
     LoggerSingleton() {}
+
     LoggerSingleton(const LoggerSingleton& obj) = delete;
     LoggerSingleton(LoggerSingleton&& obj) = delete;
     LoggerSingleton& operator=(const LoggerSingleton& obj) = delete;
     LoggerSingleton& operator=(LoggerSingleton&& obj) = delete;
+
+    ~LoggerSingleton()
+    {
+        //delete fileStream;
+        //delete consoleStream;
+    }
 };
 
 void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
-    // Create file and console streams
-    QTextStream fileStream(&LoggerSingleton::instance().fileRef());
-    QTextStream consoleStream(stdout);
-
     // Set current date and time
     QString currentDate = "[" + QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") + "]";
 
     // Write to file
+    QString msgType;
     switch (type)
     {
         case QtDebugMsg:
-            fileStream << QString("%1\nFunction \"%2\", Line %3\nDebug: %4\n\n").
-                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
+            msgType = "Debug";
             break;
         case QtInfoMsg:
-            fileStream << QString("%1\nFunction \"%2\", Line %3\nInfo: %4\n\n").
-                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
+            msgType = "Info";
             break;
         case QtWarningMsg:
-            fileStream << QString("%1\nFunction \"%2\", Line %3\nWarning: %4\n\n").
-                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
+            msgType = "Warning";
             break;
         case QtCriticalMsg:
-            fileStream << QString("%1\nFunction \"%2\", Line %3\nCritical: %4\n\n").
-                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
+            msgType = "Critical";
             break;
         case QtFatalMsg:
-            fileStream << QString("%1\nFunction \"%2\", Line %3\nFatal: %4\n\n").
-                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
+            msgType = "Fatal";
             break;
     }
 
+    LoggerSingleton::instance().getFileStream() << QString("%1\nFunction \"%2\", Line %3\n" + msgType + " %4\n\n").
+              arg(currentDate).arg(context.function).arg(context.line).arg(msg);
+
     // Write to console
-    consoleStream << QString("%1, Function \"%2\", Line %3, %4 \n").
+    LoggerSingleton::instance().getConsoleStream() << QString("%1, Function \"%2\", Line %3, " + msgType + ": %4\n").
                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
 
-    fileStream.flush();
-    consoleStream.flush();
+    LoggerSingleton::instance().getFileStream().flush();
+    LoggerSingleton::instance().getConsoleStream().flush();
 }
 
 int main(int argc, char *argv[])
@@ -98,7 +103,7 @@ int main(int argc, char *argv[])
     quint16 scenePort  = static_cast<quint16>(settings.value("PORTS/Scene").toInt());
 
     QString log = QDir::homePath() + "/" + settings.value("FILES/Log").toString();
-    LoggerSingleton::instance().setFilename(log);
+    LoggerSingleton::instance().initStreams(log);
 
     qInstallMessageHandler(messageHandler);
 
