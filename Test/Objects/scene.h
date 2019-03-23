@@ -22,8 +22,9 @@ public:
     Scene(quint16 port);
 public slots:
     // Slots for necessary actions
-    void incomingConnection(int socketDescriptor) override;
     void readyRead();
+protected:
+    void incomingConnection(int socketDescriptor) override;
 };
 
 #endif // SCENE_H

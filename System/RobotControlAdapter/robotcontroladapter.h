@@ -42,8 +42,9 @@ public:
     RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint16 scenePort);
 private slots:
     // Slots for necessary actions
-    void incomingConnection(int socketDescriptor) override;
     void readyRead();
+protected:
+    void incomingConnection(int socketDescriptor) override;
 signals:
     void closeAll();
 };
