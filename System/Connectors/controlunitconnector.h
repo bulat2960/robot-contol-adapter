@@ -2,6 +2,7 @@
 #define CONTROLUNITCONNECTOR_H
 
 #include <QTcpSocket>
+#include <QTime>
 
 class ControlUnitConnector : public QObject
 {
@@ -20,13 +21,16 @@ public:
 
     ~ControlUnitConnector();
 
+public:
+    QByteArray getName() const;
+
 public slots:
     void slotSend(QByteArray msg);
     void slotRead();
 
 signals:
     void signalMsgReceived(QByteArray msg);
-    void signalUnitClosed();
+    void signalDisconnected();
 };
 
 #endif // CONTROLUNITCONNECTOR_H

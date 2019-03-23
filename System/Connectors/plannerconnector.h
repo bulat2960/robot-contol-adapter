@@ -2,6 +2,7 @@
 #define PLANNERCONNECTOR_H
 
 #include <QTcpSocket>
+#include <QTime>
 
 class PlannerConnector : public QObject
 {
@@ -24,7 +25,7 @@ public slots:
 
 signals:
     void signalMsgReceived(QByteArray msg);
-    void signalClose(QByteArray msg);
+    void signalShutdown(QByteArray msg);
 };
 
 #endif // PLANNERCONNECTOR_H

@@ -2,6 +2,7 @@
 #define SCENECONNECTOR_H
 
 #include <QTcpSocket>
+#include <QTime>
 
 class SceneConnector : public QObject
 {

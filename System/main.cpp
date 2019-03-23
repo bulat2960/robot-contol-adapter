@@ -61,7 +61,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext& context, const QSt
 
 int main(int argc, char *argv[])
 {
-    QApplication* a = new QApplication(argc, argv);
+    QApplication a(argc, argv);
     qInstallMessageHandler(messageHandler);
 
     QSettings settings("D:\\Qt Programs New\\RCA\\config.ini", QSettings::IniFormat);
@@ -72,7 +72,8 @@ int main(int argc, char *argv[])
     qDebug() << sceneIp << rcaPort << scenePort;
 
     RobotControlAdapter* RCA = new RobotControlAdapter(rcaPort, sceneIp, scenePort);
-    QObject::connect(RCA, &RobotControlAdapter::signalCloseAll, a, QApplication::quit);
+    QObject::connect(RCA, &RobotControlAdapter::signalShutdown, &RobotControlAdapter::deleteLater);
+    QObject::connect(RCA, &RobotControlAdapter::signalShutdown, &a, QApplication::quit);
 
-    return a->exec();
+    return a.exec();
 }

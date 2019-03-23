@@ -41,6 +41,11 @@ public:
     RobotControlAdapter(RobotControlAdapter&&) = delete;
     RobotControlAdapter& operator=(RobotControlAdapter&&) = delete;
 
+    ~RobotControlAdapter() override;
+
+private:
+    void shutdown();
+
 private slots:
     // Slots for necessary actions
     void incomingConnection(int socketDescriptor) override;
@@ -48,9 +53,12 @@ private slots:
 
 public slots:
     void slotParseCmd(QByteArray cmd);
+    void slotClearUnitConnector();
+    void slotPrepareShutdown(QByteArray msg);
 
 signals:
-    void signalCloseAll();
+    void signalDisconnectRequest(QByteArray msg);
+    void signalShutdown();
 };
 
 #endif // ROBOTCONTROLADAPTER_H

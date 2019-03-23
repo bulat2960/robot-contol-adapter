@@ -58,46 +58,95 @@ void RobotControlAdapter::slotRead()
     // Read data
     QByteArray data = socket->readAll();
 
-    if (data == "p")
+    if (data == "p") // Planner tries to connect
     {
+        // If planner already exists, delete him...
         if (plannerConnector != nullptr)
         {
-            qInfo() << "Planner connector exists, recreate";
+            qInfo() << "Planner connector exists, delete";
             plannerConnector->deleteLater();
-            plannerConnector = nullptr;
-            plannerConnector = new PlannerConnector(socket);
         }
-        else
-        {
-            qInfo() << "Create new planner connector";
-            plannerConnector = new PlannerConnector(socket);
-        }
-        waitSockets.removeOne(socket);
+
+        // ... and reinit him
+        qInfo() << "Create new planner connector";
+        plannerConnector = new PlannerConnector(socket);
 
         // (*) ... and connect to planner connector
         connect(socket, &QTcpSocket::readyRead, plannerConnector, &PlannerConnector::slotRead);
+        // On sending shutdown signal, call shutdown preparing
+        connect(plannerConnector, &PlannerConnector::signalShutdown, this, &RobotControlAdapter::slotPrepareShutdown);
     }
-    else
+    else // Unit tries to connect
     {
+        // Create new unit connector
         ControlUnitConnector* unitConnector = new ControlUnitConnector(socket, data);
+
+        // If it exists earlier, delete him...
         if (unitConnectors.contains(data))
         {
-            qInfo() << "Unit connector exists, recreate";
+            qInfo() << "Unit connector exists, delete";
             unitConnectors[data]->deleteLater();
-            unitConnectors[data] = nullptr;
-            unitConnectors[data] = unitConnector;
+            unitConnectors.remove(data);
         }
-        else
-        {
-            qInfo() << "Create new unit connector";
-            unitConnectors.insert(data, unitConnector);
-        }
-        waitSockets.removeOne(socket);
+
+        // ... and reinit him
+        qInfo() << "Create new unit connector";
+        unitConnectors.insert(data, unitConnector);
 
         // (*) ... and connect to unit connector
         connect(socket, &QTcpSocket::readyRead, unitConnector, &ControlUnitConnector::slotRead);
-        connect(plannerConnector, &PlannerConnector::signalClose, unitConnector, &ControlUnitConnector::slotSend);
-        connect(unitConnector, &ControlUnitConnector::signalUnitClosed, &ControlUnitConnector::deleteLater);
+        // On getting disconnect request from planner, send it to unit connector
+        connect(this, &RobotControlAdapter::signalDisconnectRequest, unitConnector, &ControlUnitConnector::slotSend);
+        // On receiving disconnect signal from unit connector, destroy him
+        connect(unitConnector, &ControlUnitConnector::signalDisconnected, this, &RobotControlAdapter::slotClearUnitConnector);
+    }
+
+    // Remove wait socket, it is useless here now
+    waitSockets.removeOne(socket);
+
+    qDebug() << "Elapsed" << timer.elapsed() << "ms";
+}
+
+void RobotControlAdapter::slotPrepareShutdown(QByteArray msg)
+{
+    QTime timer;
+    timer.restart();
+
+    // Delete planner
+    plannerConnector->deleteLater();
+
+    // If there was no connected units, shutdown the system
+    // And send disconnect request to connected units otherwise
+    if (unitConnectors.isEmpty())
+    {
+        emit signalShutdown();
+    }
+    else
+    {
+        emit signalDisconnectRequest(msg);
+    }
+
+    qDebug() << "Elapsed" << timer.elapsed() << "ms";
+}
+
+void RobotControlAdapter::slotClearUnitConnector()
+{
+    QTime timer;
+    timer.restart();
+
+    // Find UnitConnector-sender
+    QObject* object = QObject::sender();
+    ControlUnitConnector* unitConnector = static_cast<ControlUnitConnector*>(object);
+
+    // Delete him
+    QByteArray name = unitConnector->getName();
+    unitConnectors[name]->deleteLater();
+    unitConnectors.remove(name);
+
+    // If there are no UnitConnectors, shutdown the system
+    if (unitConnectors.isEmpty())
+    {
+        emit signalShutdown();
     }
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
@@ -107,6 +156,26 @@ void RobotControlAdapter::slotParseCmd(QByteArray cmd)
 {
 
 }
+
+RobotControlAdapter::~RobotControlAdapter()
+{
+    QTime timer;
+    timer.restart();
+
+    // Units and planner had to be deleted earlier, so one need to delete scene connector
+    sceneConnector->deleteLater();
+
+    // Delete wait sockets, if some of them are still here
+    for (const auto& socket : waitSockets)
+    {
+        socket->disconnectFromHost();
+        socket->deleteLater();
+    }
+
+    qDebug() << "Elapsed" << timer.elapsed() << "ms";
+}
+
+// Following code need to be rewrited!!!!! Don't delete it
 
 /* RobotControlAdapter::processPlannerCmd(QByteArray plannerCmd)
 {
