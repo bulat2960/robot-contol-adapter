@@ -143,8 +143,8 @@ void RobotControlAdapter::slotClearUnitConnector()
     unitConnectors[name]->deleteLater();
     unitConnectors.remove(name);
 
-    // If there are no UnitConnectors, shutdown the system
-    if (unitConnectors.isEmpty())
+    // If there are no UnitConnectors and planner destroyed too, shutdown the system
+    if (unitConnectors.isEmpty() && plannerConnector == nullptr)
     {
         emit signalShutdown();
     }
