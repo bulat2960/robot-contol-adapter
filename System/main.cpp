@@ -51,8 +51,8 @@ private:
 
     ~LoggerSingleton()
     {
-        //delete fileStream;
-        //delete consoleStream;
+        delete fileStream;
+        delete consoleStream;
     }
 };
 
@@ -61,27 +61,18 @@ void messageHandler(QtMsgType type, const QMessageLogContext& context, const QSt
     // Set current date and time
     QString currentDate = "[" + QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") + "]";
 
-    // Write to file
+    // Choose msg type
     QString msgType;
     switch (type)
     {
-        case QtDebugMsg:
-            msgType = "Debug";
-            break;
-        case QtInfoMsg:
-            msgType = "Info";
-            break;
-        case QtWarningMsg:
-            msgType = "Warning";
-            break;
-        case QtCriticalMsg:
-            msgType = "Critical";
-            break;
-        case QtFatalMsg:
-            msgType = "Fatal";
-            break;
+        case QtDebugMsg:    msgType = "Debug";    break;
+        case QtInfoMsg:     msgType = "Info";     break;
+        case QtWarningMsg:  msgType = "Warning";  break;
+        case QtCriticalMsg: msgType = "Critical"; break;
+        case QtFatalMsg:    msgType = "Fatal";    break;
     }
 
+    // Write to file
     LoggerSingleton::instance().getFileStream() << QString("%1\nFunction \"%2\", Line %3\n" + msgType + " %4\n\n").
               arg(currentDate).arg(context.function).arg(context.line).arg(msg);
 
@@ -89,6 +80,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext& context, const QSt
     LoggerSingleton::instance().getConsoleStream() << QString("%1, Function \"%2\", Line %3, " + msgType + ": %4\n").
                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
 
+    // Flush
     LoggerSingleton::instance().getFileStream().flush();
     LoggerSingleton::instance().getConsoleStream().flush();
 }
