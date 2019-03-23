@@ -25,7 +25,7 @@ RobotControlAdapter::RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
 
-void RobotControlAdapter::incomingConnection(int socketDescriptor)
+void RobotControlAdapter::incomingConnection(qintptr socketDescriptor)
 {
     QTime timer;
     timer.restart();

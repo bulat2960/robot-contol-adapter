@@ -24,7 +24,7 @@ public slots:
     // Slots for necessary actions
     void readyRead();
 protected:
-    void incomingConnection(int socketDescriptor) override;
+    void incomingConnection(qintptr socketDescriptor) override;
 };
 
 #endif // SCENE_H
