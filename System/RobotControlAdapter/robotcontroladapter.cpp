@@ -1,6 +1,6 @@
-#include "robotcontroladapter.h"
+﻿#include "robotcontroladapter.h"
 
-RobotControlAdapter::RobotControlAdapter()
+RobotControlAdapter::RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint16 scenePort)
 {
     QTime timer;
     timer.restart();
@@ -10,10 +10,10 @@ RobotControlAdapter::RobotControlAdapter()
     // Init scene socket and try to connect
     qInfo() << "Create scene socket";
     sceneSocket = new QTcpSocket(this);
-    sceneSocket->connectToHost("localhost", 1111);
+    sceneSocket->connectToHost(sceneIp, scenePort);
 
     // Start listening
-    if (this->listen(QHostAddress::Any, 5555))
+    if (this->listen(QHostAddress::Any, rcaPort))
     {
         qDebug() << "Listening RCA";
     }

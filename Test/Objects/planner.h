@@ -1,4 +1,4 @@
-#ifndef PLANNER_H
+﻿#ifndef PLANNER_H
 #define PLANNER_H
 
 #include <QTcpSocket>
@@ -14,8 +14,8 @@ class Planner : public QWidget // Inherited from QWidget, can create simple wind
     Q_OBJECT
 private:
     // RCA ip and port
-    QString serverIp;
-    quint16 serverPort;
+    QString rcaIp;
+    quint16 rcaPort;
 
     // Allows connect to server
     QTcpSocket* socket;
@@ -32,7 +32,7 @@ private:
     QByteArray name;
 public:
     // Basic constructor
-    Planner(QString name, QString serverIp, quint16 serverPort);
+    Planner(QString name, QString rcaIp, quint16 rcaPort);
 public slots:
     // Slots for necessary actions
     void connectToServer();

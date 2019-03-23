@@ -1,10 +1,10 @@
-#include "planner.h"
+﻿#include "planner.h"
 
-Planner::Planner(QString unitName, QString serverIp, quint16 serverPort)
+Planner::Planner(QString unitName, QString rcaIp, quint16 rcaPort)
 {
     // Set RCA ip and port
-    this->serverIp = serverIp;
-    this->serverPort = serverPort;
+    this->rcaIp = rcaIp;
+    this->rcaPort = rcaPort;
 
     // Create socket, set name
     socket = new QTcpSocket(this);
@@ -38,7 +38,7 @@ Planner::Planner(QString unitName, QString serverIp, quint16 serverPort)
 void Planner::connectToServer()
 {
     // Try to connect to server
-    socket->connectToHost(serverIp, serverPort);
+    socket->connectToHost(rcaIp, rcaPort);
     sendMsgButton->setEnabled(true);
 }
 

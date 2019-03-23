@@ -1,4 +1,4 @@
-#ifndef CONTROLUNIT_H
+﻿#ifndef CONTROLUNIT_H
 #define CONTROLUNIT_H
 
 #include <QTcpSocket>
@@ -15,8 +15,8 @@ class ControlUnit : public QWidget // Inherited from QWidget, can create simple 
     Q_OBJECT
 private:
     // RCA ip and port
-    QString serverIp;
-    quint16 serverPort;
+    QString rcaIp;
+    quint16 rcaPort;
 
     // Allows connect to server
     QTcpSocket* socket;
@@ -29,7 +29,7 @@ private:
     QByteArray name;
 public:
     // Basic constructor
-    ControlUnit(QString unitName, QString serverIp, quint16 serverPort);
+    ControlUnit(QString unitName, QString rcaIp, quint16 rcaPort);
 public slots:
     // Slots for necessary actions
     void connectToServer();
