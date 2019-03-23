@@ -43,7 +43,7 @@ public:
 private slots:
     // Slots for necessary actions
     void readyRead();
-protected:
+protected slots:
     void incomingConnection(qintptr socketDescriptor) override;
 signals:
     void closeAll();
