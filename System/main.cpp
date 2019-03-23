@@ -51,6 +51,7 @@ private:
 
     ~LoggerSingleton()
     {
+        delete fileStream->device();
         delete fileStream;
         delete consoleStream;
     }
