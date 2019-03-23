@@ -2,74 +2,104 @@
 #include <QFile>
 #include <QDateTime>
 #include <QSettings>
+#include <QDir>
 
 #include <iostream>
 
 #include "RobotControlAdapter/robotcontroladapter.h"
 
-void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
+class LoggerSingleton
 {
-    // Create and open file
-    QFile file("D:/Qt Programs New/RCA/log.txt");
-    if (!file.open(QIODevice::Append | QIODevice::Text))
+private:
+    QTextStream* fileStream;
+    QTextStream* consoleStream;
+public:
+    static LoggerSingleton& instance()
     {
-        return;
+        static LoggerSingleton obj;
+        return obj;
     }
 
-    // Create file and console streams
-    QTextStream fileStream(&file);
-    QTextStream consoleStream(stdout);
+    void initStreams(QString name)
+    {
+        QFile* file = new QFile(name);
+        if (!file->isOpen())
+        {
+            file->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+        }
 
+        fileStream = new QTextStream(file);
+        consoleStream = new QTextStream(stdout);
+    }
+
+    QTextStream& getFileStream() const
+    {
+        return *fileStream;
+    }
+
+    QTextStream& getConsoleStream() const
+    {
+        return *consoleStream;
+    }
+private:
+    LoggerSingleton() {}
+
+    LoggerSingleton(const LoggerSingleton& obj) = delete;
+    LoggerSingleton(LoggerSingleton&& obj) = delete;
+    LoggerSingleton& operator=(const LoggerSingleton& obj) = delete;
+    LoggerSingleton& operator=(LoggerSingleton&& obj) = delete;
+
+    ~LoggerSingleton()
+    {
+        delete fileStream->device();
+        delete fileStream;
+        delete consoleStream;
+    }
+};
+
+void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
+{
     // Set current date and time
     QString currentDate = "[" + QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzz") + "]";
 
-    // Write to file
+    // Choose msg type
+    QString msgType;
     switch (type)
     {
-        case QtDebugMsg:
-            fileStream << QString("%1\nFunction \"%2\", Line %3\nDebug: %4\n\n").
-                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
-            break;
-        case QtInfoMsg:
-            fileStream << QString("%1\nFunction \"%2\", Line %3\nInfo: %4\n\n").
-                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
-            break;
-        case QtWarningMsg:
-            fileStream << QString("%1\nFunction \"%2\", Line %3\nWarning: %4\n\n").
-                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
-            break;
-        case QtCriticalMsg:
-            fileStream << QString("%1\nFunction \"%2\", Line %3\nCritical: %4\n\n").
-                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
-            break;
-        case QtFatalMsg:
-            fileStream << QString("%1\nFunction \"%2\", Line %3\nFatal: %4\n\n").
-                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
-            break;
+        case QtDebugMsg:    msgType = "Debug";    break;
+        case QtInfoMsg:     msgType = "Info";     break;
+        case QtWarningMsg:  msgType = "Warning";  break;
+        case QtCriticalMsg: msgType = "Critical"; break;
+        case QtFatalMsg:    msgType = "Fatal";    break;
     }
 
+    // Write to file
+    LoggerSingleton::instance().getFileStream() << QString("%1\nFunction \"%2\", Line %3\n" + msgType + " %4\n\n").
+              arg(currentDate).arg(context.function).arg(context.line).arg(msg);
+
     // Write to console
-    consoleStream << QString("%1, Function \"%2\", Line %3, %4 \n").
+    LoggerSingleton::instance().getConsoleStream() << QString("%1, Function \"%2\", Line %3, " + msgType + ": %4\n").
                      arg(currentDate).arg(context.function).arg(context.line).arg(msg);
 
-    fileStream.flush();
-    consoleStream.flush();
-
-    file.flush();
-    file.close();
+    // Flush
+    LoggerSingleton::instance().getFileStream().flush();
+    LoggerSingleton::instance().getConsoleStream().flush();
 }
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     qInstallMessageHandler(messageHandler);
-
-    QSettings settings("D:\\Qt Programs New\\RCA\\config.ini", QSettings::IniFormat);
+	
+    QSettings settings("config.ini", QSettings::IniFormat);
     QString sceneIp = settings.value("HOSTS/Scene").toString();
     quint16 rcaPort = static_cast<quint16>(settings.value("PORTS/Rca").toInt());
     quint16 scenePort  = static_cast<quint16>(settings.value("PORTS/Scene").toInt());
 
-    qDebug() << sceneIp << rcaPort << scenePort;
+    QString log = QDir::homePath() + "/" + settings.value("FILES/Log").toString();
+    LoggerSingleton::instance().initStreams(log);
+
+    qInstallMessageHandler(messageHandler);
 
     RobotControlAdapter* RCA = new RobotControlAdapter(rcaPort, sceneIp, scenePort);
     QObject::connect(RCA, &RobotControlAdapter::signalShutdown, &RobotControlAdapter::deleteLater);

@@ -48,7 +48,6 @@ private:
 
 private slots:
     // Slots for necessary actions
-    void incomingConnection(int socketDescriptor) override;
     void slotRead();
 
 public slots:
@@ -56,6 +55,8 @@ public slots:
     void slotClearUnitConnector();
     void slotPrepareShutdown(QByteArray msg);
 
+protected slots:
+    void incomingConnection(qintptr socketDescriptor) override;
 signals:
     void signalDisconnectRequest(QByteArray msg);
     void signalShutdown();

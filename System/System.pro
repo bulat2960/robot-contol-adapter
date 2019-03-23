@@ -37,6 +37,12 @@ HEADERS += \
     Connectors/sceneconnector.h \
     Connectors/plannerconnector.h
 
+CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
+CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
+install_it.path = $$DESTDIR
+install_it.files += $$PWD/../config.ini
+INSTALLS += install_it
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
