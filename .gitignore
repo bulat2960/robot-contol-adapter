@@ -1,0 +1,5 @@
+*.autosave
+*.user.*
+*.user
+log.txt
+config.txt
