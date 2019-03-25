@@ -3,6 +3,7 @@
 
 #include <QTcpSocket>
 #include <QTime>
+#include <QPair>
 
 class PlannerConnector : public QObject
 {
@@ -20,11 +21,14 @@ public:
 
     ~PlannerConnector();
 
+private:
+     QList<QPair<QByteArray, QByteArray>> parseMsg(QByteArray msg);
+
 public slots:
     void slotRead();
 
 signals:
-    void signalMsgReceived(QByteArray msg);
+    void signalFromPlannerToUnit(QByteArray name, QByteArray msg);
     void signalShutdown(QByteArray msg);
 };
 

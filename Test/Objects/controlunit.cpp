@@ -51,10 +51,8 @@ void ControlUnit::readyRead()
     }
     else
     {
-        // Some sommand from CUnit
-        QByteArray s1 = "\"id\"";
-        QByteArray s2 = "\"SomeData\"";
-        socket->write(s1 + ":" + s2);
+        socket->write(data);
+        socket->waitForBytesWritten();
     }
 }
 

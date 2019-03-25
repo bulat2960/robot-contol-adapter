@@ -75,6 +75,8 @@ void RobotControlAdapter::slotRead()
         connect(socket, &QTcpSocket::readyRead, plannerConnector, &PlannerConnector::slotRead);
         // On sending shutdown signal, call shutdown preparing
         connect(plannerConnector, &PlannerConnector::signalShutdown, this, &RobotControlAdapter::slotPrepareShutdown);
+        // On sending command to control unit from planner, exclude shutdown command
+        connect(plannerConnector, &PlannerConnector::signalFromPlannerToUnit, this, &RobotControlAdapter::slotFromPlannerToUnit);
     }
     else // Unit tries to connect
     {
@@ -152,9 +154,16 @@ void RobotControlAdapter::slotClearUnitConnector()
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
 
-void RobotControlAdapter::slotParseCmd(QByteArray cmd)
+void RobotControlAdapter::slotFromPlannerToUnit(QByteArray name, QByteArray msg)
 {
+    if (!unitConnectors.contains(name))
+    {
+        qInfo() << "Unit doesn't exist";
+        return;
+    }
 
+    qInfo() << "Retranslate msg" << msg << "to unit" << name;
+    unitConnectors[name]->slotSend(msg);
 }
 
 RobotControlAdapter::~RobotControlAdapter()
@@ -177,48 +186,7 @@ RobotControlAdapter::~RobotControlAdapter()
 
 // Following code need to be rewrited!!!!! Don't delete it
 
-/* RobotControlAdapter::processPlannerCmd(QByteArray plannerCmd)
-{
-    qInfo() << "Process planner command -" << plannerCmd;
-
-    QTime timer;
-    timer.restart();
-
-    if (plannerCmd == "e") // Planner sends shutdown command (planner already exists at this moment)
-    {
-        for (const auto& client : clients) // Send shutdown command to all clients
-        {
-            client->write(plannerCmd);
-        }
-        clients.clear();
-
-        emit closeAll();
-    }
-    else // Planner sends other command
-    {
-        QList<QByteArray> pairNameAndCmd = plannerCmd.split(':');
-
-        if (pairNameAndCmd.size() != 2) // Wrong command
-        {
-            qWarning() << "Wrong command";
-            return;
-        }
-
-        QByteArray name = pairNameAndCmd[0];
-        QByteArray cmd  = pairNameAndCmd[1];
-
-        if (clients.contains(name)) // If client exists
-        {
-            clients[name]->write(cmd); // Send message to the unit
-        }
-        else // Not exist
-        {
-            qWarning() << "Client doesn't exists";
-        }
-    }
-
-    qDebug() << "Elapsed -" << timer.elapsed() << "ms";
-}
+/*
 
 void RobotControlAdapter::processUnitCmd(QByteArray unitCmd)
 {
@@ -236,39 +204,4 @@ void RobotControlAdapter::processUnitCmd(QByteArray unitCmd)
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
 
-void RobotControlAdapter::processSingleCharCmd(QTcpSocket* socket, QByteArray name)
-{
-    qInfo() << "Process single char command -" << name;
-
-    QTime timer;
-    timer.restart();
-
-    if (name == "p") // Planner sends its name
-    {
-        if (planner != nullptr && isUnconnectedState(planner)) // Already exist, but disconnected
-        {
-            planner->deleteLater();
-        }
-        planner = socket; // Init or reinit socket
-        waitSockets.removeOne(socket);
-    }
-    else if (socket != planner) // It's from one of units
-    {
-        if (clients.contains(name)) // Client isn't in the list and sends us his name
-        {
-            clients.insert(name, socket);
-        }
-        else if (clients.contains(name) && isUnconnectedState(clients[name])) // Exists, but disconnected
-        {
-            clients[name]->deleteLater();
-            clients[name] = socket;
-        }
-        waitSockets.removeOne(socket);
-    }
-    else
-    {
-        qWarning() << "Unknown command from planner";
-    }
-
-    qDebug() << "Elapsed" << timer.elapsed() << "ms";
-}*/
+*/

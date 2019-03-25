@@ -12,18 +12,48 @@ void PlannerConnector::slotRead()
 
     QByteArray msg = socket->readAll();
 
-    qInfo() << "Planner sends cmd -" << msg;
-
     if (msg == "e")
     {
+        qInfo() << "Planner sends shutdown cmd";
         emit signalShutdown(msg);
     }
     else
     {
-        emit signalMsgReceived(msg);
+        QList<QPair<QByteArray, QByteArray>> pairList = parseMsg(msg);
+
+        for (const auto& cmd : pairList)
+        {
+            qInfo() << "Planner wants to send" << cmd.second << "to unit" << cmd.first;
+            emit signalFromPlannerToUnit(cmd.first, cmd.second);
+        }
     }
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
+}
+
+QList<QPair<QByteArray, QByteArray>> PlannerConnector::parseMsg(QByteArray msg)
+{
+    QList<QByteArray> separatedCommands = msg.split('|');
+
+    QList<QPair<QByteArray, QByteArray>> pairList;
+
+    for (const auto& command : separatedCommands)
+    {
+        QList<QByteArray> unitNameAndMsg = command.split(':');
+
+        if (unitNameAndMsg.size() == 1)
+        {
+            qInfo() << "Senseless cmd" << unitNameAndMsg[0];
+        }
+        else
+        {
+            pairList.append(qMakePair(unitNameAndMsg[0], unitNameAndMsg[1]));
+        }
+    }
+
+    qDebug() << pairList.size();
+
+    return pairList;
 }
 
 PlannerConnector::~PlannerConnector()

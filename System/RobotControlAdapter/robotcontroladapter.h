@@ -51,9 +51,10 @@ private slots:
     void slotRead();
 
 public slots:
-    void slotParseCmd(QByteArray cmd);
     void slotClearUnitConnector();
     void slotPrepareShutdown(QByteArray msg);
+
+    void slotFromPlannerToUnit(QByteArray name, QByteArray msg);
 
 protected slots:
     void incomingConnection(qintptr socketDescriptor) override;

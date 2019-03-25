@@ -39,9 +39,6 @@ public slots:
     void sendName();
     void sendMsg();
     void disconnectFromServer();
-
-signals:
-    void closeAll();
 };
 
 #endif // PLANNER_H

@@ -4,8 +4,6 @@ ControlUnitConnector::ControlUnitConnector(QTcpSocket* socket, QByteArray name)
 {
     this->socket = socket;
     this->name = name;
-
-    connect(socket, &QTcpSocket::readyRead, this, &ControlUnitConnector::slotRead);
 }
 
 QByteArray ControlUnitConnector::getName() const
@@ -19,14 +17,12 @@ void ControlUnitConnector::slotSend(QByteArray msg)
     timer.restart();
 
     socket->write(msg);
+    socket->waitForBytesWritten();
 
     if (msg == "e")
     {
-        if (socket->waitForBytesWritten())
-        {
-            qInfo() << "Unit" << name << "has been disconnected";
-            emit signalDisconnected();
-        }
+        qInfo() << "Unit" << name << "has been disconnected";
+        emit signalDisconnected();
     }
     else
     {
@@ -43,9 +39,9 @@ void ControlUnitConnector::slotRead()
 
     QByteArray msg = socket->readAll();
 
-    qInfo() << "Unit" << name << "received message" << msg;
+    qInfo() << "Receive message" << msg << "from unit" << name;
 
-    emit signalMsgReceived(msg);
+    //emit signalMsgReceived(msg);
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
