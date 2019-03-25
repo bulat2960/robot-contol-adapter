@@ -12,7 +12,6 @@ Planner::Planner(QString unitName, QString rcaIp, quint16 rcaPort)
 
     // Connect signals and slots
     connect(socket, &QTcpSocket::connected, this, &Planner::sendName);
-    connect(socket, &QTcpSocket::readyRead, this, &Planner::readyRead);
 
     // Connect button
     connectButton = new QPushButton("Planner: Connect to Server", this);
@@ -58,15 +57,7 @@ void Planner::sendMsg()
     if (arr == "e")
     {
         disconnectFromServer();
-        socket->waitForBytesWritten(1000);
-        emit closeAll();
     }
-}
-
-void Planner::readyRead()
-{
-    // Read data
-    QByteArray data = socket->readAll();
 }
 
 void Planner::disconnectFromServer()

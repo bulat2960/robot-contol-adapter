@@ -19,7 +19,6 @@ int main(int argc, char *argv[])
     Q_UNUSED(scene);
 
     Planner* planner = new Planner("p", rcaIp, rcaPort);
-    QObject::connect(planner, &Planner::closeAll, a, &QApplication::quit);
     planner->show();
 
     ControlUnit* unit1 = new ControlUnit("t", rcaIp, rcaPort);
