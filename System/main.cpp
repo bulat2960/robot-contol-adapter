@@ -13,6 +13,8 @@ class LoggerSingleton
 private:
     QList<QTextStream*> fileStreams;
     QTextStream consoleStream;
+
+    const int maxNumberOfStreams = 8;
 public:
     static LoggerSingleton& instance()
     {
@@ -20,14 +22,17 @@ public:
         return obj;
     }
 
-    void addDevice(QString name)
+    void addFile(QString name)
     {
-        QFile* file = new QFile(name);
-        if (!file->isOpen())
+        if (fileStreams.size() <= maxNumberOfStreams)
         {
-            file->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+            QFile* file = new QFile(name);
+            if (!file->isOpen())
+            {
+                file->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+            }
+            fileStreams.append(new QTextStream(file));
         }
-        fileStreams.append(new QTextStream(file));
     }
 
     void logMsg(QString msg)
@@ -92,7 +97,7 @@ int main(int argc, char *argv[])
     quint16 scenePort  = static_cast<quint16>(settings.value("PORTS/Scene").toInt());
 
     QString log = QDir::homePath() + "/" + settings.value("FILES/Log").toString();
-    LoggerSingleton::instance().addDevice(log);
+    LoggerSingleton::instance().addFile(log);
 
     qInstallMessageHandler(messageHandler);
 
