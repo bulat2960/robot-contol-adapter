@@ -59,7 +59,6 @@ public slots:
 protected slots:
     void incomingConnection(qintptr socketDescriptor) override;
 signals:
-    void signalDisconnectRequest(QByteArray msg);
     void signalShutdown();
 };
 

@@ -97,8 +97,6 @@ void RobotControlAdapter::slotRead()
 
         // (*) ... and connect to unit connector
         connect(socket, &QTcpSocket::readyRead, unitConnector, &ControlUnitConnector::slotRead);
-        // On getting disconnect request from planner, send it to unit connector
-        connect(this, &RobotControlAdapter::signalDisconnectRequest, unitConnector, &ControlUnitConnector::slotSend);
         // On receiving disconnect signal from unit connector, destroy him
         connect(unitConnector, &ControlUnitConnector::signalDisconnected, this, &RobotControlAdapter::slotClearUnitConnector);
     }
@@ -124,8 +122,11 @@ void RobotControlAdapter::slotPrepareShutdown(QByteArray msg)
         emit signalShutdown();
     }
     else
-    {
-        emit signalDisconnectRequest(msg);
+    { 
+        for (auto& unitConnector : unitConnectors)
+        {
+            unitConnector->slotSend(msg);
+        }
     }
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
