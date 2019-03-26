@@ -1,4 +1,4 @@
-#ifndef SCENE_H
+﻿#ifndef SCENE_H
 #define SCENE_H
 
 #include <QTcpServer>
@@ -14,7 +14,6 @@ class Scene : public QTcpServer // Simple tcp server
 {
     Q_OBJECT
 private:
-    quint16 port;
     // Socket for connect to RCA
     QTcpSocket* rcaSocket;
 public:

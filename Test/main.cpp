@@ -10,10 +10,14 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+    const QString defaultRcaIp   = "localhost";
+    const quint16 defaultRcaPort   = 5555;
+    const quint16 defaultScenePort = 6666;
+
     QSettings settings("config.ini", QSettings::IniFormat);
-    QString rcaIp = settings.value("HOSTS/Rca").toString();
-    quint16 rcaPort = static_cast<quint16>(settings.value("PORTS/Rca").toInt());
-    quint16 scenePort  = static_cast<quint16>(settings.value("PORTS/Scene").toInt());
+    QString rcaIp = settings.value("HOSTS/Rca", defaultRcaIp).toString();
+    quint16 rcaPort = static_cast<quint16>(settings.value("PORTS/Rca", defaultRcaPort).toInt());
+    quint16 scenePort  = static_cast<quint16>(settings.value("PORTS/Scene", defaultScenePort).toInt());
 
     Scene* scene = new Scene(scenePort);
     Q_UNUSED(scene);
