@@ -60,8 +60,6 @@ private:
             delete fileStream->device();
             delete fileStream;
         }
-
-        delete consoleStream.device();
     }
 };
 

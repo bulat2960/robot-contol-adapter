@@ -74,7 +74,7 @@ void RobotControlAdapter::slotRead()
         // (*) ... and connect to planner connector
         connect(socket, &QTcpSocket::readyRead, plannerConnector, &PlannerConnector::slotRead);
         // On sending shutdown signal, call shutdown preparing
-        connect(plannerConnector, &PlannerConnector::signalShutdown, this, &RobotControlAdapter::slotPrepareShutdown);
+        connect(plannerConnector, &PlannerConnector::signalShutdown, this, &RobotControlAdapter::slotShutdown);
         // On sending command to control unit from planner, exclude shutdown command
         connect(plannerConnector, &PlannerConnector::signalFromPlannerToUnit, this, &RobotControlAdapter::slotFromPlannerToUnit);
     }
@@ -105,26 +105,17 @@ void RobotControlAdapter::slotRead()
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
 
-void RobotControlAdapter::slotPrepareShutdown(QByteArray msg)
+void RobotControlAdapter::slotShutdown(QByteArray msg)
 {
     QTime timer;
     timer.restart();
 
-    // If there was no connected units, shutdown the system
-    // And send disconnect request to connected units otherwise
-    if (unitConnectors.isEmpty())
+    for (auto& unitConnector : unitConnectors)
     {
-        emit signalShutdown();
+        unitConnector->send(msg);
     }
-    else
-    {
-        for (auto& unitConnector : unitConnectors)
-        {
-            unitConnector->send(msg);
-        }
 
-        emit signalShutdown();
-    }
+    emit signalShutdown();
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
@@ -157,11 +148,11 @@ RobotControlAdapter::~RobotControlAdapter()
     unitConnectors.clear();
 
     // Delete wait sockets, if some of them are still here
-    /*for (const auto& socket : waitSockets)
+    for (const auto& socket : waitSockets)
     {
         socket->disconnectFromHost();
         socket->deleteLater();
-    }*/
+    }
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
