@@ -51,7 +51,6 @@ private slots:
     void slotRead();
 
 public slots:
-    void slotClearUnitConnector();
     void slotPrepareShutdown(QByteArray msg);
 
     void slotFromPlannerToUnit(QByteArray name, QByteArray msg);
