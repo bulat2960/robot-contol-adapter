@@ -87,12 +87,18 @@ void messageHandler(QtMsgType type, const QMessageLogContext& context, const QSt
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    const QString defaultSceneIp   = "localhost";
+    const quint16 defaultRcaPort   = 5555;
+    const quint16 defaultScenePort = 6666;
+
+
     qInstallMessageHandler(messageHandler);
 	
     QSettings settings("config.ini", QSettings::IniFormat);
-    QString sceneIp = settings.value("HOSTS/Scene").toString();
-    quint16 rcaPort = static_cast<quint16>(settings.value("PORTS/Rca").toInt());
-    quint16 scenePort  = static_cast<quint16>(settings.value("PORTS/Scene").toInt());
+    QString sceneIp = settings.value("HOSTS/Scene", defaultSceneIp).toString();
+    quint16 rcaPort = static_cast<quint16>(settings.value("PORTS/Rca", defaultRcaPort).toInt());
+    quint16 scenePort  = static_cast<quint16>(settings.value("PORTS/Scene", defaultScenePort).toInt());
 
     QString log = QDir::homePath() + "/" + settings.value("FILES/Log").toString();
     LoggerSingleton::instance().addFile(log);
