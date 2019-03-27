@@ -87,16 +87,14 @@ void messageHandler(QtMsgType type, const QMessageLogContext& context, const QSt
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-<<<<<<< HEAD
 
     const QString defaultSceneIp   = "localhost";
     const quint16 defaultRcaPort   = 5555;
     const quint16 defaultScenePort = 6666;
 
-=======
+
     qInstallMessageHandler(messageHandler);
 	
->>>>>>> 251862baff6c2baa859e9a3092a2dd1177159394
     QSettings settings("config.ini", QSettings::IniFormat);
     QString sceneIp = settings.value("HOSTS/Scene", defaultSceneIp).toString();
     quint16 rcaPort = static_cast<quint16>(settings.value("PORTS/Rca", defaultRcaPort).toInt());
