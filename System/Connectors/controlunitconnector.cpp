@@ -11,7 +11,7 @@ QByteArray ControlUnitConnector::getName() const
     return name;
 }
 
-void ControlUnitConnector::slotSend(QByteArray msg)
+void ControlUnitConnector::send(QByteArray msg)
 {
     QTime timer;
     timer.restart();
@@ -22,7 +22,6 @@ void ControlUnitConnector::slotSend(QByteArray msg)
     if (msg == "e")
     {
         qInfo() << "Unit" << name << "has been disconnected";
-        emit signalDisconnected();
     }
     else
     {

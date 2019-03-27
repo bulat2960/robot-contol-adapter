@@ -23,14 +23,14 @@ public:
 
 public:
     QByteArray getName() const;
+    void send(QByteArray msg);
 
 public slots:
-    void slotSend(QByteArray msg);
+
     void slotRead();
 
 signals:
     void signalMsgReceived(QByteArray msg);
-    void signalDisconnected();
 };
 
 #endif // CONTROLUNITCONNECTOR_H

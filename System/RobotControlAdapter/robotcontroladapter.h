@@ -51,15 +51,12 @@ private slots:
     void slotRead();
 
 public slots:
-    void slotClearUnitConnector();
-    void slotPrepareShutdown(QByteArray msg);
-
+    void slotShutdown(QByteArray msg);
     void slotFromPlannerToUnit(QByteArray name, QByteArray msg);
 
 protected slots:
     void incomingConnection(qintptr socketDescriptor) override;
 signals:
-    void signalDisconnectRequest(QByteArray msg);
     void signalShutdown();
 };
 
