@@ -11,8 +11,10 @@
 class LoggerSingleton
 {
 private:
-    QTextStream* fileStream;
-    QTextStream* consoleStream;
+    QList<QTextStream*> fileStreams;
+    QTextStream consoleStream;
+
+    const int maxNumberOfStreams = 8;
 public:
     static LoggerSingleton& instance()
     {
@@ -20,29 +22,31 @@ public:
         return obj;
     }
 
-    void initStreams(QString name)
+    void addFile(QString name)
     {
-        QFile* file = new QFile(name);
-        if (!file->isOpen())
+        if (fileStreams.size() <= maxNumberOfStreams)
         {
-            file->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+            QFile* file = new QFile(name);
+            if (!file->isOpen())
+            {
+                file->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+            }
+            fileStreams.append(new QTextStream(file));
         }
-
-        fileStream = new QTextStream(file);
-        consoleStream = new QTextStream(stdout);
     }
 
-    QTextStream& getFileStream() const
+    void logMsg(QString msg)
     {
-        return *fileStream;
-    }
-
-    QTextStream& getConsoleStream() const
-    {
-        return *consoleStream;
+        for (auto& fileStream : fileStreams)
+        {
+            (*fileStream) << msg;
+            fileStream->flush();
+        }
+        consoleStream << msg;
+        consoleStream.flush();
     }
 private:
-    LoggerSingleton() {}
+    LoggerSingleton() : consoleStream(stdout) {}
 
     LoggerSingleton(const LoggerSingleton& obj) = delete;
     LoggerSingleton(LoggerSingleton&& obj) = delete;
@@ -51,9 +55,11 @@ private:
 
     ~LoggerSingleton()
     {
-        delete fileStream->device();
-        delete fileStream;
-        delete consoleStream;
+        for (auto& fileStream : fileStreams)
+        {
+            delete fileStream->device();
+            delete fileStream;
+        }
     }
 };
 
@@ -74,38 +80,35 @@ void messageHandler(QtMsgType type, const QMessageLogContext& context, const QSt
     }
 
     // Write to file
-    LoggerSingleton::instance().getFileStream() << QString("%1\nFunction \"%2\", Line %3\n" + msgType + " %4\n\n").
-              arg(currentDate).arg(context.function).arg(context.line).arg(msg);
-
-    // Write to console
-    LoggerSingleton::instance().getConsoleStream() << QString("%1, Function \"%2\", Line %3, " + msgType + ": %4\n").
-                     arg(currentDate).arg(context.function).arg(context.line).arg(msg);
-
-    // Flush
-    LoggerSingleton::instance().getFileStream().flush();
-    LoggerSingleton::instance().getConsoleStream().flush();
+    LoggerSingleton::instance().logMsg( QString("%1, Function \"%2\", Line %3, " + msgType + ": %4\n").
+              arg(currentDate).arg(context.function).arg(context.line).arg(msg));
 }
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+<<<<<<< HEAD
 
     const QString defaultSceneIp   = "localhost";
     const quint16 defaultRcaPort   = 5555;
     const quint16 defaultScenePort = 6666;
 
+=======
+    qInstallMessageHandler(messageHandler);
+	
+>>>>>>> 251862baff6c2baa859e9a3092a2dd1177159394
     QSettings settings("config.ini", QSettings::IniFormat);
     QString sceneIp = settings.value("HOSTS/Scene", defaultSceneIp).toString();
     quint16 rcaPort = static_cast<quint16>(settings.value("PORTS/Rca", defaultRcaPort).toInt());
     quint16 scenePort  = static_cast<quint16>(settings.value("PORTS/Scene", defaultScenePort).toInt());
 
     QString log = QDir::homePath() + "/" + settings.value("FILES/Log").toString();
-    LoggerSingleton::instance().initStreams(log);
+    LoggerSingleton::instance().addFile(log);
 
     qInstallMessageHandler(messageHandler);
 
-    RobotControlAdapter* RCA = new RobotControlAdapter(rcaPort, sceneIp, scenePort);
-    Q_UNUSED(RCA);
+    RobotControlAdapter RCA(rcaPort, sceneIp, scenePort);
+    QObject::connect(&RCA, &RobotControlAdapter::signalShutdown, &a, QApplication::quit);
 
     return a.exec();
 }

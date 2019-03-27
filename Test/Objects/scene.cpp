@@ -1,4 +1,4 @@
-#include "scene.h"
+﻿#include "scene.h"
 
 Scene::Scene(quint16 port)
 {
@@ -13,7 +13,7 @@ Scene::Scene(quint16 port)
     }
 }
 
-void Scene::incomingConnection(int socketDescriptor)
+void Scene::incomingConnection(qintptr socketDescriptor)
 {
     // Create socket, set descritor
     rcaSocket = new QTcpSocket(this);

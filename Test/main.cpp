@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication* a = new QApplication(argc, argv);
 
     const QString defaultRcaIp   = "localhost";
     const quint16 defaultRcaPort   = 5555;
@@ -31,5 +31,5 @@ int main(int argc, char *argv[])
     ControlUnit* unit2 = new ControlUnit("f", rcaIp, rcaPort);
     unit2->show();
 
-    return a.exec();
+    return a->exec();
 }

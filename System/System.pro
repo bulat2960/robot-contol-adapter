@@ -26,10 +26,16 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    RobotControlAdapter/robotcontroladapter.cpp
+    RobotControlAdapter/robotcontroladapter.cpp \
+    Connectors/controlunitconnector.cpp \
+    Connectors/sceneconnector.cpp \
+    Connectors/plannerconnector.cpp
 
 HEADERS += \
-    RobotControlAdapter/robotcontroladapter.h
+    RobotControlAdapter/robotcontroladapter.h \
+    Connectors/controlunitconnector.h \
+    Connectors/sceneconnector.h \
+    Connectors/plannerconnector.h
 
 CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
 CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug

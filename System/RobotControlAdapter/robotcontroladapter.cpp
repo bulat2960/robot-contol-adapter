@@ -5,12 +5,11 @@ RobotControlAdapter::RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint
     QTime timer;
     timer.restart();
 
-    planner = nullptr;
+    plannerConnector = nullptr;
 
     // Init scene socket and try to connect
-    qInfo() << "Create scene socket";
-    sceneSocket = new QTcpSocket(this);
-    sceneSocket->connectToHost(sceneIp, scenePort);
+    qInfo() << "Create scene connector";
+    sceneConnector = new SceneConnector(sceneIp, scenePort);
 
     // Start listening
     if (this->listen(QHostAddress::Any, rcaPort))
@@ -25,7 +24,7 @@ RobotControlAdapter::RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
 
-void RobotControlAdapter::incomingConnection(int socketDescriptor)
+void RobotControlAdapter::incomingConnection(qintptr socketDescriptor)
 {
     QTime timer;
     timer.restart();
@@ -39,12 +38,12 @@ void RobotControlAdapter::incomingConnection(int socketDescriptor)
     waitSockets.append(socket);
 
     // Connect signals and slots
-    connect(socket, &QTcpSocket::readyRead, this, &RobotControlAdapter::readyRead);
+    connect(socket, &QTcpSocket::readyRead, this, &RobotControlAdapter::slotRead);
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
 
-void RobotControlAdapter::readyRead()
+void RobotControlAdapter::slotRead()
 {
     QTime timer;
     timer.restart();
@@ -53,129 +52,129 @@ void RobotControlAdapter::readyRead()
     QObject* object = QObject::sender();
     QTcpSocket* socket = static_cast<QTcpSocket*>(object);
 
+    // Disconnect from this object... (*)
+    disconnect(socket, &QTcpSocket::readyRead, this, &RobotControlAdapter::slotRead);
+
     // Read data
     QByteArray data = socket->readAll();
 
-    if (data.size() == 1 && data != "e") // Object names, or shutdown command, or planner cmd with only 1 symbol, except for command 'e'
+    if (data == "p") // Planner tries to connect
     {
-        processSingleCharCmd(socket, data);
-    }
-    else // Other commands
-    {
-        QList<QByteArray> list = data.split('|'); // Get a list of commands
-
-        for (int i = 0; i < list.size(); i++)
+        // If planner already exists, delete him...
+        if (plannerConnector != nullptr)
         {
-            QByteArray cmd = list[i];
-
-            if (socket == planner)
-            {
-                processPlannerCmd(cmd);
-            }
-            else
-            {
-                processUnitCmd(cmd);
-            }
+            qInfo() << "Planner connector exists, delete";
+            plannerConnector->deleteLater();
         }
+
+        // ... and reinit him
+        qInfo() << "Create new planner connector";
+        plannerConnector = new PlannerConnector(socket);
+
+        // (*) ... and connect to planner connector
+        connect(socket, &QTcpSocket::readyRead, plannerConnector, &PlannerConnector::slotRead);
+        // On sending shutdown signal, call shutdown preparing
+        connect(plannerConnector, &PlannerConnector::signalShutdown, this, &RobotControlAdapter::slotShutdown);
+        // On sending command to control unit from planner, exclude shutdown command
+        connect(plannerConnector, &PlannerConnector::signalFromPlannerToUnit, this, &RobotControlAdapter::slotFromPlannerToUnit);
+    }
+    else // Unit tries to connect
+    {
+        // Create new unit connector
+        ControlUnitConnector* unitConnector = new ControlUnitConnector(socket, data);
+
+        // If it exists earlier, delete him...
+        if (unitConnectors.contains(data))
+        {
+            qInfo() << "Unit connector exists, delete";
+            unitConnectors[data]->deleteLater();
+            unitConnectors.remove(data);
+        }
+
+        // ... and reinit him
+        qInfo() << "Create new unit connector";
+        unitConnectors.insert(data, unitConnector);
+
+        // (*) ... and connect to unit connector
+        connect(socket, &QTcpSocket::readyRead, unitConnector, &ControlUnitConnector::slotRead);
+    }
+
+    // Remove wait socket, it is useless here now
+    waitSockets.removeOne(socket);
+
+    qDebug() << "Elapsed" << timer.elapsed() << "ms";
+}
+
+void RobotControlAdapter::slotShutdown(QByteArray msg)
+{
+    QTime timer;
+    timer.restart();
+
+    for (auto& unitConnector : unitConnectors)
+    {
+        unitConnector->send(msg);
+    }
+
+    emit signalShutdown();
+
+    qDebug() << "Elapsed" << timer.elapsed() << "ms";
+}
+
+void RobotControlAdapter::slotFromPlannerToUnit(QByteArray name, QByteArray msg)
+{
+    if (!unitConnectors.contains(name))
+    {
+        qInfo() << "Unit doesn't exist";
+        return;
+    }
+
+    qInfo() << "Retranslate msg" << msg << "to unit" << name;
+    unitConnectors[name]->send(msg);
+}
+
+RobotControlAdapter::~RobotControlAdapter()
+{
+    QTime timer;
+    timer.restart();
+
+    // Delete all connectors
+    sceneConnector->deleteLater();
+    plannerConnector->deleteLater();
+
+    for (const auto& unitConnector : unitConnectors)
+    {
+        unitConnector->deleteLater();
+    }
+    unitConnectors.clear();
+
+    // Delete wait sockets, if some of them are still here
+    for (const auto& socket : waitSockets)
+    {
+        socket->disconnectFromHost();
+        socket->deleteLater();
     }
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
 
-bool RobotControlAdapter::isConnectedState(QTcpSocket* socket) const
-{
-    return socket->state() == QTcpSocket::SocketState::ConnectedState;
-}
+// Following code need to be rewrited!!!!! Don't delete it
 
-bool RobotControlAdapter::isUnconnectedState(QTcpSocket* socket) const
-{
-    return socket->state() == QTcpSocket::SocketState::UnconnectedState;
-}
+/*
 
-void RobotControlAdapter::processPlannerCmd(QByteArray cmd)
+void RobotControlAdapter::processUnitCmd(QByteArray unitCmd)
 {
-    qInfo() << "Process planner command -" << cmd;
+    qInfo() << "Process unit command -" << unitCmd;
 
     QTime timer;
     timer.restart();
 
-    if (cmd == "e") // Planner sends shutdown command (planner already exists at this moment)
-    {
-        for (const auto& client : clients) // Send shutdown command to all clients
-        {
-            client->write(cmd);
-        }
-        clients.clear();
-    }
-    else // Planner sends other command
-    {
-        QList<QByteArray> temp = cmd.split(':');
+    QList<QByteArray> pairNameAndCmd = unitCmd.split(':');
 
-        if (temp.size() != 2) // Wrong command
-        {
-            qWarning() << "Wrong command";
-            return;
-        }
-
-        if (clients.contains(temp[0])) // If client exists
-        {
-            clients[temp[0]]->write(temp[1]); // Send message to the unit
-        }
-        else // Not exist
-        {
-            qWarning() << "Client doesn't exists";
-        }
-    }
-
-    qDebug() << "Elapsed -" << timer.elapsed() << "ms";
-}
-
-void RobotControlAdapter::processUnitCmd(QByteArray cmd)
-{
-    qInfo() << "Process unit command -" << cmd;
-
-    QTime timer;
-    timer.restart();
-
-    QList<QByteArray> temp = cmd.split(':');
-    sceneSocket->write("{" + temp[0] + " : " + temp[1] + "}");
+    QByteArray name = pairNameAndCmd[0];
+    QByteArray cmd  = pairNameAndCmd[1];
+    sceneSocket->write("{" + name + " : " + cmd + "}");
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
 
-void RobotControlAdapter::processSingleCharCmd(QTcpSocket* socket, QByteArray cmd)
-{
-    qInfo() << "Process single char command -" << cmd;
-
-    QTime timer;
-    timer.restart();
-
-    if (cmd == "p") // Planner sends its name
-    {
-        if (planner != nullptr && isUnconnectedState(planner)) // Already exist, but disconnected
-        {
-            planner->deleteLater();
-        }
-        planner = socket; // Init or reinit socket
-        waitSockets.removeOne(socket);
-    }
-    else if (socket != planner) // It's from one of units
-    {
-        if (clients.contains(cmd) == false) // Client isn't in the list and sends us his name
-        {
-            clients.insert(cmd, socket);
-        }
-        else if (clients.contains(cmd) == true && isUnconnectedState(clients[cmd])) // Exists, but disconnected
-        {
-            clients[cmd]->deleteLater();
-            clients[cmd] = socket;
-        }
-        waitSockets.removeOne(socket);
-    }
-    else
-    {
-        qWarning() << "Unknown command from planner";
-    }
-
-    qDebug() << "Elapsed" << timer.elapsed() << "ms";
-}
+*/
