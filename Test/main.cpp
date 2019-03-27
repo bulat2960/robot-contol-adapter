@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication* a = new QApplication(argc, argv);
 
     QSettings settings("config.ini", QSettings::IniFormat);
     QString rcaIp = settings.value("HOSTS/Rca").toString();
@@ -27,5 +27,5 @@ int main(int argc, char *argv[])
     ControlUnit* unit2 = new ControlUnit("f", rcaIp, rcaPort);
     unit2->show();
 
-    return a.exec();
+    return a->exec();
 }
