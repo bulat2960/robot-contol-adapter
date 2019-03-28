@@ -97,6 +97,8 @@ void RobotControlAdapter::slotRead()
 
         // (*) ... and connect to unit connector
         connect(socket, &QTcpSocket::readyRead, unitConnector, &ControlUnitConnector::slotRead);
+        // On sending msg from unit to scene
+        connect(unitConnector, &ControlUnitConnector::signalFromUnitToScene, this, &RobotControlAdapter::slotFromUnitToScene);
     }
 
     // Remove wait socket, it is useless here now
