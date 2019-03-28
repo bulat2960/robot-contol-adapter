@@ -6,7 +6,7 @@ SceneConnector::SceneConnector(QString ip, quint16 port)
     socket->connectToHost(ip, port);
 }
 
-void SceneConnector::slotSend(QByteArray msg)
+void SceneConnector::send(QByteArray msg)
 {
     QTime timer;
     timer.restart();

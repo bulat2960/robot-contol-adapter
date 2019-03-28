@@ -19,8 +19,8 @@ public:
 
     ~SceneConnector();
 
-public slots:
-    void slotSend(QByteArray msg);
+public:
+    void send(QByteArray msg);
 };
 
 #endif // SCENECONNECTOR_H
