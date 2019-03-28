@@ -132,6 +132,12 @@ void RobotControlAdapter::slotFromPlannerToUnit(QByteArray name, QByteArray msg)
     unitConnectors[name]->send(msg);
 }
 
+void RobotControlAdapter::slotFromUnitToScene(QByteArray msg)
+{
+    qInfo() << "Retranslate msg" << msg << "from one of the units";
+    sceneConnector->slotSend(msg);
+}
+
 RobotControlAdapter::~RobotControlAdapter()
 {
     QTime timer;
