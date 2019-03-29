@@ -53,7 +53,6 @@ private slots:
 public slots:
     void slotShutdown(QByteArray msg);
     void slotFromPlannerToUnit(QByteArray name, QByteArray msg);
-    void slotFromUnitToScene(QByteArray msg);
 
 protected slots:
     void incomingConnection(qintptr socketDescriptor) override;

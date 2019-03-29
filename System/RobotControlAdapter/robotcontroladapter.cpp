@@ -98,7 +98,7 @@ void RobotControlAdapter::slotRead()
         // (*) ... and connect to unit connector
         connect(socket, &QTcpSocket::readyRead, unitConnector, &ControlUnitConnector::slotRead);
         // On sending msg from unit to scene
-        connect(unitConnector, &ControlUnitConnector::signalFromUnitToScene, this, &RobotControlAdapter::slotFromUnitToScene);
+        connect(unitConnector, &ControlUnitConnector::signalFromUnitToScene, sceneConnector, &SceneConnector::slotSend);
     }
 
     // Remove wait socket, it is useless here now
@@ -132,12 +132,6 @@ void RobotControlAdapter::slotFromPlannerToUnit(QByteArray name, QByteArray msg)
 
     qInfo() << "Retranslate msg" << msg << "to unit" << name;
     unitConnectors[name]->send(msg);
-}
-
-void RobotControlAdapter::slotFromUnitToScene(QByteArray msg)
-{
-    qInfo() << "Retranslate msg" << msg << "from one of the units";
-    sceneConnector->send(msg);
 }
 
 RobotControlAdapter::~RobotControlAdapter()
