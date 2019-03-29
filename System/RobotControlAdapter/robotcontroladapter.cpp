@@ -164,25 +164,3 @@ RobotControlAdapter::~RobotControlAdapter()
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
-
-// Following code need to be rewrited!!!!! Don't delete it
-
-/*
-
-void RobotControlAdapter::processUnitCmd(QByteArray unitCmd)
-{
-    qInfo() << "Process unit command -" << unitCmd;
-
-    QTime timer;
-    timer.restart();
-
-    QList<QByteArray> pairNameAndCmd = unitCmd.split(':');
-
-    QByteArray name = pairNameAndCmd[0];
-    QByteArray cmd  = pairNameAndCmd[1];
-    sceneSocket->write("{" + name + " : " + cmd + "}");
-
-    qDebug() << "Elapsed" << timer.elapsed() << "ms";
-}
-
-*/
