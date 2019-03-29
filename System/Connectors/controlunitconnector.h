@@ -31,6 +31,7 @@ public slots:
 
 signals:
     void signalMsgReceived(QByteArray msg);
+    void signalFromUnitToScene(QByteArray msg);
 };
 
 #endif // CONTROLUNITCONNECTOR_H

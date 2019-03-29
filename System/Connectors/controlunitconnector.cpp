@@ -39,8 +39,7 @@ void ControlUnitConnector::slotRead()
     QByteArray msg = socket->readAll();
 
     qInfo() << "Receive message" << msg << "from unit" << name;
-
-    //emit signalMsgReceived(msg);
+    emit signalFromUnitToScene(msg);
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }

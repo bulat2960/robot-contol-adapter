@@ -97,6 +97,8 @@ void RobotControlAdapter::slotRead()
 
         // (*) ... and connect to unit connector
         connect(socket, &QTcpSocket::readyRead, unitConnector, &ControlUnitConnector::slotRead);
+        // On sending msg from unit to scene
+        connect(unitConnector, &ControlUnitConnector::signalFromUnitToScene, sceneConnector, &SceneConnector::slotSend);
     }
 
     // Remove wait socket, it is useless here now
@@ -156,25 +158,3 @@ RobotControlAdapter::~RobotControlAdapter()
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
-
-// Following code need to be rewrited!!!!! Don't delete it
-
-/*
-
-void RobotControlAdapter::processUnitCmd(QByteArray unitCmd)
-{
-    qInfo() << "Process unit command -" << unitCmd;
-
-    QTime timer;
-    timer.restart();
-
-    QList<QByteArray> pairNameAndCmd = unitCmd.split(':');
-
-    QByteArray name = pairNameAndCmd[0];
-    QByteArray cmd  = pairNameAndCmd[1];
-    sceneSocket->write("{" + name + " : " + cmd + "}");
-
-    qDebug() << "Elapsed" << timer.elapsed() << "ms";
-}
-
-*/
