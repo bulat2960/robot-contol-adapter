@@ -1,7 +1,7 @@
 ---
 name: Extra task
 about: Extra task for self-improvment
-
+labels: enhancement, 'priority: low'
 ---
 
 # Extra task
