@@ -1,7 +1,7 @@
 ---
 name: Main task
 about: Main task for study all aspects of development in it.
-labels: enhancement, 'priority: high'
+labels: enhancement, priority-high
 ---
 
 # Main task
