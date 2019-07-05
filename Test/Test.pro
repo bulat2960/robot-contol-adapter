@@ -32,7 +32,8 @@ SOURCES += \
     ../System/RobotControlAdapter/robotcontroladapter.cpp \
     ../System/Connectors/controlunitconnector.cpp \
     ../System/Connectors/sceneconnector.cpp \
-    ../System/Connectors/plannerconnector.cpp
+    ../System/Connectors/plannerconnector.cpp \
+    test.cpp
 
 HEADERS += \
     Objects/controlunit.h \
@@ -41,7 +42,10 @@ HEADERS += \
     ../System/RobotControlAdapter/robotcontroladapter.h \
     ../System/Connectors/controlunitconnector.h \
     ../System/Connectors/sceneconnector.h \
-    ../System/Connectors/plannerconnector.h
+    ../System/Connectors/plannerconnector.h \
+    test.h
+
+INCLUDEPATH += ../System/
 
 CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
 CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
