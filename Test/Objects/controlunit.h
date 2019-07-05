@@ -10,7 +10,7 @@
  * He will be able to turn the message into JSON-packet soon (in development)
 **/
 
-class ControlUnit : public QWidget // Inherited from QWidget, can create simple window with buttons
+class ControlUnit : public QObject //: public QWidget // Inherited from QWidget, can create simple window with buttons
 {
     Q_OBJECT
 private:
@@ -22,8 +22,8 @@ private:
     QTcpSocket* socket;
 
     // Interactive buttons
-    QPushButton* connectButton;
-    QPushButton* disconnectButton;
+    //QPushButton* connectButton;
+    //QPushButton* disconnectButton;
 
     // Contains unit name
     QByteArray name;
@@ -32,7 +32,7 @@ public:
     ControlUnit(QString unitName, QString rcaIp, quint16 rcaPort);
 public slots:
     // Slots for necessary actions
-    void connectToServer();
+    bool connectToServer();
     void sendName();
     void readyRead();
     void disconnectFromServer();
