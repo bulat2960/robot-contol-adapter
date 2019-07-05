@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core network
+QT       += core network testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -28,12 +28,20 @@ SOURCES += \
     Objects/controlunit.cpp \
     Objects/planner.cpp \
     Objects/scene.cpp \
-    main.cpp
+    main.cpp \
+    ../System/RobotControlAdapter/robotcontroladapter.cpp \
+    ../System/Connectors/controlunitconnector.cpp \
+    ../System/Connectors/sceneconnector.cpp \
+    ../System/Connectors/plannerconnector.cpp
 
 HEADERS += \
     Objects/controlunit.h \
     Objects/planner.h \
-    Objects/scene.h
+    Objects/scene.h \
+    ../System/RobotControlAdapter/robotcontroladapter.h \
+    ../System/Connectors/controlunitconnector.h \
+    ../System/Connectors/sceneconnector.h \
+    ../System/Connectors/plannerconnector.h
 
 CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
 CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
