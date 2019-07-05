@@ -141,7 +141,10 @@ RobotControlAdapter::~RobotControlAdapter()
 
     // Delete all connectors
     sceneConnector->deleteLater();
-    plannerConnector->deleteLater();
+    if (plannerConnector)
+    {
+        plannerConnector->deleteLater();
+    }
 
     for (const auto& unitConnector : unitConnectors)
     {
