@@ -16,7 +16,6 @@ Test::Test(QObject *parent) : QObject(parent)
 
 void Test::connectUnitToRca()
 {
-    RobotControlAdapter RCA(rcaPort, sceneIp, scenePort);
     ControlUnit unit("t", rcaIp, rcaPort);
     bool isConnected = unit.connectToServer();
 

@@ -1,6 +1,8 @@
-﻿#include <QApplication>
+﻿#include <QCoreApplication>
 #include <QFile>
 #include <QSettings>
+#include <QProcess>
+#include <QDir>
 
 #include "Objects/controlunit.h"
 #include "Objects/planner.h"
@@ -10,10 +12,23 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication* a = new QApplication(argc, argv);
-    auto res = QTest::qExec(new Test, argc, argv);
+    QCoreApplication a(argc, argv);
 
-    return res;
+    QDir dir = QDir::current();
+    dir.cdUp();
+    dir.cdUp();
+    dir.cd("System/debug");
+    QString pathToRcaExec = dir.path();
+
+    QProcess rcaProcess;
+    rcaProcess.start(pathToRcaExec + "/System.exe", QStringList());
+
+    if (rcaProcess.waitForStarted())
+    {
+        auto res = QTest::qExec(new Test, argc, argv);
+    }
+
+    return 1;
 
     /*const QString defaultRcaIp     = "localhost";
     const quint16 defaultRcaPort   = 5555;
