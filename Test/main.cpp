@@ -1,4 +1,4 @@
-﻿#include <QApplication>
+﻿#include <QCoreApplication>
 #include <QFile>
 #include <QSettings>
 
@@ -10,7 +10,7 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication* a = new QApplication(argc, argv);
+    QApplication* a = new QCoreApplication(argc, argv);
     auto res = QTest::qExec(new Test, argc, argv);
 
     return res;
