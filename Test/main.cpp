@@ -19,6 +19,9 @@ int main(int argc, char *argv[])
     dir.cdUp();
     dir.cd("System/release");
     QString pathToRcaExec = dir.path();
+    qDebug() << pathToRcaExec;
+    qDebug() << (pathToRcaExec + "/System.exe");
+    qDebug() << QDir::currentPath();
 
     QProcess rcaProcess;
     rcaProcess.start(pathToRcaExec + "/System.exe", QStringList());
