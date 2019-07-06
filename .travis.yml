@@ -16,5 +16,5 @@ script:
  - qmake RCA.pro
  - make
  - cd Test
- - g++ main.cpp -o Test
+ - cd release
  - ./Test
