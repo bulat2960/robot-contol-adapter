@@ -10,6 +10,7 @@ ControlUnit::ControlUnit(QString unitName, QString rcaIp, quint16 rcaPort)
     socket = new QTcpSocket(this);
     name.append(unitName);
 
+    /*
     // Connect signals and slots
     connect(socket, &QTcpSocket::connected, this, &ControlUnit::sendName);
     connect(socket, &QTcpSocket::readyRead, this, &ControlUnit::readyRead);
@@ -23,12 +24,18 @@ ControlUnit::ControlUnit(QString unitName, QString rcaIp, quint16 rcaPort)
     disconnectButton = new QPushButton("ControlUnit " + name + ": Disconnect from Server", this);
     disconnectButton->setGeometry(0, 200, 400, 200);
     connect(disconnectButton, &QPushButton::clicked, this, &ControlUnit::disconnectFromServer);
+    */
 }
 
-void ControlUnit::connectToServer()
+bool ControlUnit::connectToServer()
 {
     // Try to connect to server
     socket->connectToHost(rcaIp, rcaPort);
+    if (socket->waitForConnected())
+    {
+        return true;
+    }
+    return false;
 }
 
 void ControlUnit::sendName()

@@ -13,6 +13,7 @@ Planner::Planner(QString unitName, QString rcaIp, quint16 rcaPort)
     // Connect signals and slots
     connect(socket, &QTcpSocket::connected, this, &Planner::sendName);
 
+    /*
     // Connect button
     connectButton = new QPushButton("Planner: Connect to Server", this);
     connectButton->setGeometry(0, 0, 400, 100);
@@ -32,13 +33,14 @@ Planner::Planner(QString unitName, QString rcaIp, quint16 rcaPort)
     sendMsgButton->setGeometry(0, 250, 400, 30);
     sendMsgButton->setEnabled(false);
     connect(sendMsgButton, &QPushButton::clicked, this, &Planner::sendMsg);
+    */
 }
 
 void Planner::connectToServer()
 {
     // Try to connect to server
     socket->connectToHost(rcaIp, rcaPort);
-    sendMsgButton->setEnabled(true);
+    //sendMsgButton->setEnabled(true);
 }
 
 void Planner::sendName()
@@ -51,7 +53,7 @@ void Planner::sendName()
 void Planner::sendMsg()
 {
     QByteArray arr;
-    arr.append(textEdit->toPlainText());
+    //arr.append(textEdit->toPlainText());
     socket->write(arr);
 
     if (arr == "e")
@@ -64,5 +66,5 @@ void Planner::disconnectFromServer()
 {
     qDebug() << "Planner - disconnect";
     socket->disconnectFromHost();
-    sendMsgButton->setEnabled(false);
+    //sendMsgButton->setEnabled(false);
 }
