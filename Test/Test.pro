@@ -7,7 +7,7 @@
 QT       += core network testlib
 QT -= gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+# greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Test
 TEMPLATE = app
