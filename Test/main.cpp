@@ -23,9 +23,12 @@ int main(int argc, char *argv[])
     QProcess rcaProcess;
     rcaProcess.start(pathToRcaExec + "/System.exe", QStringList());
 
+    qDebug() << rcaProcess.waitForStarted();
+
     if (rcaProcess.waitForStarted())
     {
         auto res = QTest::qExec(new Test, argc, argv);
+        qDebug() << res;
         rcaProcess.kill();
         if (rcaProcess.waitForFinished())
         {
@@ -33,7 +36,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    return 1;
+    return 100;
 
     /*const QString defaultRcaIp     = "localhost";
     const quint16 defaultRcaPort   = 5555;
