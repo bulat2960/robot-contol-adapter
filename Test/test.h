@@ -19,17 +19,12 @@ private:
     quint16 scenePort;
 public:
     explicit Test(QObject *parent = nullptr);
-
-    bool connectUnitToRca();
-    // еще набор таких функций
-
 signals:
 
 public slots:
 
 private slots:
-    void test_data();
-    void test();
+    void connectUnitToRca();
 };
 
 #endif // TEST_H

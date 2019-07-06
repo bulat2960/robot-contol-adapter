@@ -14,27 +14,12 @@ Test::Test(QObject *parent) : QObject(parent)
     scenePort  = static_cast<quint16>(settings.value("PORTS/Scene", defaultScenePort).toInt());
 }
 
-bool Test::connectUnitToRca()
+void Test::connectUnitToRca()
 {
     RobotControlAdapter RCA(rcaPort, sceneIp, scenePort);
     ControlUnit unit("t", rcaIp, rcaPort);
     bool isConnected = unit.connectToServer();
 
-    return isConnected;
+    QCOMPARE(isConnected, true);
 }
 
-void Test::test_data()
-{
-    QTest::addColumn<bool>("FunctionCall");
-    QTest::addColumn<bool>("Result");
-
-    QTest::newRow("UnitToRca") << connectUnitToRca() << true;
-}
-
-void Test::test()
-{
-    QFETCH(bool, FunctionCall);
-    QFETCH(bool, Result);
-
-    QCOMPARE(FunctionCall, Result);
-}
