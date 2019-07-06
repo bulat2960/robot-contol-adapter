@@ -2,7 +2,7 @@
 #define PLANNER_H
 
 #include <QTcpSocket>
-#include <QtWidgets>
+//#include <QtWidgets>
 
 /**
  * It's a mock-object of Planner
