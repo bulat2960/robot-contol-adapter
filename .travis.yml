@@ -16,4 +16,4 @@ script:
  - qmake RCA.pro
  - make
  - cd Test
- - ./Test
+ - g++ main.cpp -o
