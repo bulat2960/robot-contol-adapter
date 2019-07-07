@@ -12,7 +12,6 @@ Test::Test(QObject *parent) : QObject(parent)
     sceneIp = settings.value("HOSTS/Scene", defaultSceneIp).toString();
     rcaPort = static_cast<quint16>(settings.value("PORTS/Rca", defaultRcaPort).toInt());
     scenePort  = static_cast<quint16>(settings.value("PORTS/Scene", defaultScenePort).toInt());
-    qDebug() << rcaPort << scenePort;
 }
 
 void Test::connectUnitToRca()

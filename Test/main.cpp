@@ -23,8 +23,6 @@ int main(int argc, char *argv[])
     QProcess rcaProcess;
     rcaProcess.start(pathToRcaExec + "/System", QStringList());
 
-    qDebug() << rcaProcess.waitForStarted();
-
     if (rcaProcess.waitForStarted())
     {
         QTest::qSleep(3000);
