@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
     const quint16 defaultRcaPort   = 8000;
     const quint16 defaultScenePort = 8080;
 	
-    QSettings settings("config.ini", QSettings::IniFormat);
+    QSettings settings("../config.ini", QSettings::IniFormat);
     QString sceneIp = settings.value("HOSTS/Scene", defaultSceneIp).toString();
     quint16 rcaPort = static_cast<quint16>(settings.value("PORTS/Rca", defaultRcaPort).toInt());
     quint16 scenePort = static_cast<quint16>(settings.value("PORTS/Scene", defaultScenePort).toInt());

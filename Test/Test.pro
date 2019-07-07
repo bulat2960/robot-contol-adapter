@@ -40,6 +40,12 @@ HEADERS += \
     Objects/scene.h \
     test.h
 
+CONFIG(debug, debug|release) {
+    DESTDIR = $$OUT_PWD/debug
+}else {
+    DESTDIR = $$OUT_PWD/release
+}
+
 install_it.path = $$OUT_PWD
 install_it.files += $$PWD/../config.ini
 INSTALLS += install_it
