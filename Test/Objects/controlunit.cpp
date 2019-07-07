@@ -31,10 +31,13 @@ bool ControlUnit::connectToServer()
 {
     // Try to connect to server
     socket->connectToHost(rcaIp, rcaPort);
+    qDebug() << socket->state();
     if (socket->waitForConnected())
     {
         return true;
     }
+    qDebug() << socket->errorString();
+    qDebug() << socket->state();
     return false;
 }
 
