@@ -27,7 +27,6 @@ int main(int argc, char *argv[])
 
     if (rcaProcess.waitForStarted())
     {
-        QTest::qSleep(3000);
         auto res = QTest::qExec(new Test, argc, argv);
         rcaProcess.kill();
         if (rcaProcess.waitForFinished())
