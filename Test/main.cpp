@@ -14,15 +14,11 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    /*QDir dir = QDir::current();
+    QDir dir = QDir::current();
     dir.cdUp();
     dir.cdUp();
     dir.cd("System/release");
     QString pathToRcaExec = dir.path();
-    qDebug() << QCoreApplication::applicationDirPath();
-    qDebug() << pathToRcaExec;
-    qDebug() << (pathToRcaExec + "/System");
-    qDebug() << QDir::currentPath();
 
     QProcess rcaProcess;
     rcaProcess.start(pathToRcaExec + "/System", QStringList());
@@ -30,17 +26,18 @@ int main(int argc, char *argv[])
     qDebug() << rcaProcess.waitForStarted();
 
     if (rcaProcess.waitForStarted())
-    {*/
+    {
+        QTest::qSleep(3000);
         auto res = QTest::qExec(new Test, argc, argv);
-        /*qDebug() << res;
+        QTest::qSleep(3000);
         rcaProcess.kill();
         if (rcaProcess.waitForFinished())
         {
             return res;
         }
-    }*/
+    }
 
-    return res;
+    return 0;
 
     /*const QString defaultRcaIp     = "localhost";
     const quint16 defaultRcaPort   = 5555;
