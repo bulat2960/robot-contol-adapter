@@ -1,4 +1,4 @@
-﻿#include <QApplication>
+﻿#include <QCoreApplication>
 #include <QFile>
 #include <QDateTime>
 #include <QSettings>
@@ -86,7 +86,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext& context, const QSt
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QCoreApplication a(argc, argv);
 
     const QString defaultSceneIp   = "localhost";
     const quint16 defaultRcaPort   = 8000;
