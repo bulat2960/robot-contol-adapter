@@ -16,3 +16,4 @@ script:
  - make
  - cd Test/release
  - ./Test
+ - ls
