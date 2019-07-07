@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
     qInstallMessageHandler(messageHandler);
 
     RobotControlAdapter RCA(rcaPort, sceneIp, scenePort);
-    QObject::connect(&RCA, &RobotControlAdapter::signalShutdown, &a, QApplication::quit);
+    QObject::connect(&RCA, &RobotControlAdapter::signalShutdown, &a, QCoreApplication::quit);
 
     return a.exec();
 }
