@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QtTest>
 
-#include "../System/RobotControlAdapter/robotcontroladapter.h"
 #include "Objects/scene.h"
 #include "Objects/controlunit.h"
 #include "Objects/planner.h"
