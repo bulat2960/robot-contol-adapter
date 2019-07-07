@@ -15,8 +15,8 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     QDir dir = QDir::current();
-    dir.cdUp();
-    dir.cdUp();
+    //dir.cdUp();
+    //dir.cdUp();
     dir.cd("System/release");
     QString pathToRcaExec = dir.path();
     qDebug() << pathToRcaExec;
