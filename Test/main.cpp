@@ -15,10 +15,11 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     QDir dir = QDir::current();
-    dir.cdUp();
+    qDebug() << dir.path();
     dir.cdUp();
     dir.cd("System/release");
     QString pathToRcaExec = dir.path();
+    qDebug() <<pathToRcaExec;
 
     QProcess rcaProcess;
     rcaProcess.start(pathToRcaExec + "/System", QStringList());

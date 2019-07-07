@@ -40,24 +40,9 @@ HEADERS += \
     Objects/scene.h \
     test.h
 
-CONFIG(release) {
-    DESTDIR = $$OUT_PWD/release
-}else {
-    DESTDIR = $$OUT_PWD/debug
-}
-install_it.path = $$DESTDIR
+install_it.path = $$OUT_PWD
 install_it.files += $$PWD/../config.ini
 INSTALLS += install_it
-
-CONFIG(debug) {
-    message("debug mode")
-    message($$DESTDIR + " " + $$PWD)
-    message($$install_it.files)
-}else {
-    message("release mode")
-    message($$DESTDIR + " " + $$PWD)
-    message($$install_it.files)
-}
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
