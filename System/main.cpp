@@ -91,9 +91,6 @@ int main(int argc, char *argv[])
     const QString defaultSceneIp   = "localhost";
     const quint16 defaultRcaPort   = 5555;
     const quint16 defaultScenePort = 6666;
-
-
-    qInstallMessageHandler(messageHandler);
 	
     QSettings settings("config.ini", QSettings::IniFormat);
     QString sceneIp = settings.value("HOSTS/Scene", defaultSceneIp).toString();
