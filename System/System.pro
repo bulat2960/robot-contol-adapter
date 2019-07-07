@@ -36,9 +36,13 @@ HEADERS += \
     Connectors/sceneconnector.h \
     Connectors/plannerconnector.h
 
-CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
-CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
-install_it.path = $$DESTDIR
+CONFIG(debug, debug|release) {
+    DESTDIR = $$OUT_PWD/debug
+}else {
+    DESTDIR = $$OUT_PWD/release
+}
+
+install_it.path = $$OUT_PWD
 install_it.files += $$PWD/../config.ini
 INSTALLS += install_it
 
