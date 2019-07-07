@@ -21,11 +21,11 @@ int main(int argc, char *argv[])
     QString pathToRcaExec = dir.path();
     qDebug() << QCoreApplication::applicationDirPath();
     qDebug() << pathToRcaExec;
-    qDebug() << (pathToRcaExec + "/System.exe");
+    qDebug() << (pathToRcaExec + "/System");
     qDebug() << QDir::currentPath();
 
     QProcess rcaProcess;
-    rcaProcess.start(pathToRcaExec + "/System.exe", QStringList());
+    rcaProcess.start(pathToRcaExec + "/System", QStringList());
 
     qDebug() << rcaProcess.waitForStarted();
 
