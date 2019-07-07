@@ -32,29 +32,32 @@ SOURCES += \
     Objects/planner.cpp \
     Objects/scene.cpp \
     main.cpp \
-    ../System/RobotControlAdapter/robotcontroladapter.cpp \
-    ../System/Connectors/controlunitconnector.cpp \
-    ../System/Connectors/sceneconnector.cpp \
-    ../System/Connectors/plannerconnector.cpp \
     test.cpp
 
 HEADERS += \
     Objects/controlunit.h \
     Objects/planner.h \
     Objects/scene.h \
-    ../System/RobotControlAdapter/robotcontroladapter.h \
-    ../System/Connectors/controlunitconnector.h \
-    ../System/Connectors/sceneconnector.h \
-    ../System/Connectors/plannerconnector.h \
     test.h
 
-INCLUDEPATH += ../System/
-
-CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
-CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
+CONFIG(release) {
+    DESTDIR = $$OUT_PWD/release
+}else {
+    DESTDIR = $$OUT_PWD/debug
+}
 install_it.path = $$DESTDIR
 install_it.files += $$PWD/../config.ini
 INSTALLS += install_it
+
+CONFIG(debug) {
+    message("debug mode")
+    message($$DESTDIR + " " + $$PWD)
+    message($$install_it.files)
+}else {
+    message("release mode")
+    message($$DESTDIR + " " + $$PWD)
+    message($$install_it.files)
+}
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

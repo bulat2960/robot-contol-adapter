@@ -140,7 +140,10 @@ RobotControlAdapter::~RobotControlAdapter()
     timer.restart();
 
     // Delete all connectors
-    sceneConnector->deleteLater();
+    if (sceneConnector)
+    {
+        sceneConnector->deleteLater();
+    }
     if (plannerConnector)
     {
         plannerConnector->deleteLater();
