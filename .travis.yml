@@ -15,7 +15,5 @@ script:
  - qmake RCA.pro
  - make
  - ls -LR
- - cd Test
- - cd release
- - cd Test
+ - cd Test/release
  - ./Test
