@@ -24,6 +24,8 @@ public slots:
 
 private slots:
     void connectUnitToRca();
+    void connectPlannerToRca();
+    void sendMsgFromPlannerToUnitT();
 };
 
 #endif // TEST_H

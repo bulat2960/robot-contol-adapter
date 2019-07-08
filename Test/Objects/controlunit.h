@@ -27,6 +27,8 @@ private:
 
     // Contains unit name
     QByteArray name;
+
+    QVector<QString> receivedMessages;
 public:
     // Basic constructor
     ControlUnit(QString unitName, QString rcaIp, quint16 rcaPort);
@@ -34,7 +36,8 @@ public slots:
     // Slots for necessary actions
     bool connectToServer();
     void sendName();
-    QString readyRead();
+    void readyRead();
+    QString getLastMessage() const;
     bool disconnectFromServer();
 };
 

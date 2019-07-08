@@ -53,6 +53,7 @@ void Planner::sendName()
     // Check the connection and send our name
     qDebug() << "Planner - connection established";
     socket->write("p");
+    socket->waitForBytesWritten();
 }
 
 void Planner::sendMsg(QString msg)
@@ -61,6 +62,7 @@ void Planner::sendMsg(QString msg)
     arr.append(msg);
     //arr.append(textEdit->toPlainText());
     socket->write(arr);
+    socket->waitForBytesWritten();
 }
 
 bool Planner::disconnectFromServer()
