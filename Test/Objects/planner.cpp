@@ -36,10 +36,15 @@ Planner::Planner(QString unitName, QString rcaIp, quint16 rcaPort)
     */
 }
 
-void Planner::connectToServer()
+bool Planner::connectToServer()
 {
     // Try to connect to server
     socket->connectToHost(rcaIp, rcaPort);
+    if (socket->waitForConnected())
+    {
+        return true;
+    }
+    return false;
     //sendMsgButton->setEnabled(true);
 }
 
@@ -50,21 +55,22 @@ void Planner::sendName()
     socket->write("p");
 }
 
-void Planner::sendMsg()
+void Planner::sendMsg(QString msg)
 {
     QByteArray arr;
+    arr.append(msg);
     //arr.append(textEdit->toPlainText());
     socket->write(arr);
-
-    if (arr == "e")
-    {
-        disconnectFromServer();
-    }
 }
 
-void Planner::disconnectFromServer()
+bool Planner::disconnectFromServer()
 {
     qDebug() << "Planner - disconnect";
     socket->disconnectFromHost();
+    if (socket->waitForDisconnected())
+    {
+        return true;
+    }
+    return false;
     //sendMsgButton->setEnabled(false);
 }

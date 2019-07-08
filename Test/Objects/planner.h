@@ -35,10 +35,10 @@ public:
     Planner(QString name, QString rcaIp, quint16 rcaPort);
 public slots:
     // Slots for necessary actions
-    void connectToServer();
+    bool connectToServer();
     void sendName();
-    void sendMsg();
-    void disconnectFromServer();
+    void sendMsg(QString msg);
+    bool disconnectFromServer();
 };
 
 #endif // PLANNER_H
