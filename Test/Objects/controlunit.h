@@ -33,9 +33,9 @@ public:
 public slots:
     // Slots for necessary actions
     bool connectToServer();
-    void sendName();
-    void readyRead();
-    void disconnectFromServer();
+    bool sendName();
+    bool readyRead();
+    bool disconnectFromServer();
 };
 
 #endif // CONTROLUNIT_H
