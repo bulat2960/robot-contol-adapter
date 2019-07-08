@@ -33,8 +33,8 @@ public:
 public slots:
     // Slots for necessary actions
     bool connectToServer();
-    bool sendName();
-    bool readyRead();
+    void sendName();
+    QString readyRead();
     bool disconnectFromServer();
 };
 

@@ -38,29 +38,19 @@ bool ControlUnit::connectToServer()
     return false;
 }
 
-bool ControlUnit::sendName()
+void ControlUnit::sendName()
 {
     // Check the connection and send our name
     qDebug() << "Control Unit" << name << "- connection established";
     socket->write(name);
-    if (socket->waitForBytesWritten())
-    {
-        return true;
-    }
-    return false;
 }
 
-bool ControlUnit::readyRead()
+QString ControlUnit::readyRead()
 {
     // Read what we received
     QByteArray data = socket->readAll();
 
     qDebug() << "ControlUnit" << name << "received message -" << data;
-
-    if (data.size() == 0)
-    {
-        return false;
-    }
 
     if (data == "e")
     {
@@ -72,7 +62,7 @@ bool ControlUnit::readyRead()
         socket->waitForBytesWritten();
     }
 
-    return true;
+    return data;
 }
 
 bool ControlUnit::disconnectFromServer()
