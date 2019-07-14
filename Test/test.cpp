@@ -32,12 +32,11 @@ void Test::sendMsgFromPlannerToUnitT()
 {
     Planner planner("p", rcaIp, rcaPort);
     planner.connectToServer();
-    QTest::qSleep(3000);
     ControlUnit unit("t", rcaIp, rcaPort);
     unit.connectToServer();
-    QTest::qSleep(3000);
+    QTest::qWait(1000);
     planner.sendMsg("t:message");
-    QTest::qSleep(3000);
+    QTest::qWait(1000);
     QString msg = unit.getLastMessage();
     QCOMPARE("message", msg);
 }
