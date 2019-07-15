@@ -23,9 +23,14 @@ signals:
 public slots:
 
 private slots:
-    void connectUnitToRca();
+    void connectToRcaUnitT();
+    void connectToRcaUnitF();
     void connectPlannerToRca();
     void sendMsgFromPlannerToUnitT();
+    void sendMsgFromPlannerToUnitF();
+    void sendExitCmd();
+    void disconnectFromRcaUnitT();
+    void disconnectFromRcaUnitF();
 };
 
 #endif // TEST_H

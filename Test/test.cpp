@@ -14,10 +14,19 @@ Test::Test(QObject *parent) : QObject(parent)
     scenePort  = static_cast<quint16>(settings.value("PORTS/Scene", defaultScenePort).toInt());
 }
 
-void Test::connectUnitToRca()
+void Test::connectToRcaUnitT()
 {
     ControlUnit unit("t", rcaIp, rcaPort);
     bool isConnected = unit.connectToServer();
+    QTest::qWait(1000);
+    QCOMPARE(isConnected, true);
+}
+
+void Test::connectToRcaUnitF()
+{
+    ControlUnit unit("f", rcaIp, rcaPort);
+    bool isConnected = unit.connectToServer();
+    QTest::qWait(1000);
     QCOMPARE(isConnected, true);
 }
 
@@ -25,6 +34,7 @@ void Test::connectPlannerToRca()
 {
     Planner planner("p", rcaIp, rcaPort);
     bool isConnected = planner.connectToServer();
+    QTest::qWait(1000);
     QCOMPARE(isConnected, true);
 }
 
@@ -39,5 +49,33 @@ void Test::sendMsgFromPlannerToUnitT()
     QTest::qWait(1000);
     QString msg = unit.getLastMessage();
     QCOMPARE("message", msg);
+}
+
+void Test::sendMsgFromPlannerToUnitF()
+{
+    Planner planner("p", rcaIp, rcaPort);
+    planner.connectToServer();
+    ControlUnit unit("f", rcaIp, rcaPort);
+    unit.connectToServer();
+    QTest::qWait(1000);
+    planner.sendMsg("f:message");
+    QTest::qWait(1000);
+    QString msg = unit.getLastMessage();
+    QCOMPARE("message", msg);
+}
+
+void Test::sendExitCmd()
+{
+
+}
+
+void Test::disconnectFromRcaUnitT()
+{
+
+}
+
+void Test::disconnectFromRcaUnitF()
+{
+
 }
 
