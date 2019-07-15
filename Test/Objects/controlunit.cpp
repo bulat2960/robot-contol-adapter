@@ -13,18 +13,6 @@ ControlUnit::ControlUnit(QString unitName, QString rcaIp, quint16 rcaPort)
     // Connect signals and slots
     connect(socket, &QTcpSocket::connected, this, &ControlUnit::sendName);
     connect(socket, &QTcpSocket::readyRead, this, &ControlUnit::readyRead);
-
-    /*
-    // Connect button
-    connectButton = new QPushButton("ControlUnit " + name + ": Connect to Server", this);
-    connectButton->setGeometry(0, 0, 400, 200);
-    connect(connectButton, &QPushButton::clicked, this, &ControlUnit::connectToServer);
-
-    // Disconnect button
-    disconnectButton = new QPushButton("ControlUnit " + name + ": Disconnect from Server", this);
-    disconnectButton->setGeometry(0, 200, 400, 200);
-    connect(disconnectButton, &QPushButton::clicked, this, &ControlUnit::disconnectFromServer);
-    */
 }
 
 bool ControlUnit::connectToServer()

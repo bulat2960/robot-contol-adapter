@@ -51,8 +51,6 @@ QList<QPair<QByteArray, QByteArray>> PlannerConnector::parseMsg(QByteArray msg)
         }
     }
 
-    qDebug() << pairList.size();
-
     return pairList;
 }
 

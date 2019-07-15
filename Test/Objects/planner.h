@@ -9,7 +9,7 @@
  * Can connect to RCA and send him messages.
 **/
 
-class Planner : public QObject //public QWidget // Inherited from QWidget, can create simple window with buttons
+class Planner : public QObject
 {
     Q_OBJECT
 private:
@@ -19,14 +19,6 @@ private:
 
     // Allows connect to server
     QTcpSocket* socket;
-
-    // Interactive buttons
-    //QPushButton* connectButton;
-    //QPushButton* disconnectButton;
-
-    // Text edit and button for send message
-    //QTextEdit* textEdit;
-    //QPushButton* sendMsgButton;
 
     // Contains planner name
     QByteArray name;
