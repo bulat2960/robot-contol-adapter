@@ -32,6 +32,8 @@ private:
 public:
     // Basic constructor
     ControlUnit(QString unitName, QString rcaIp, quint16 rcaPort);
+    bool isConnected() const;
+    bool isDisconnected() const;
 public slots:
     // Slots for necessary actions
     bool connectToServer();

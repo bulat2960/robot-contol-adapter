@@ -28,9 +28,9 @@ private slots:
     void connectPlannerToRca();
     void sendMsgFromPlannerToUnitT();
     void sendMsgFromPlannerToUnitF();
-    void sendExitCmd();
     void disconnectFromRcaUnitT();
     void disconnectFromRcaUnitF();
+    void sendExitCmd();
 };
 
 #endif // TEST_H

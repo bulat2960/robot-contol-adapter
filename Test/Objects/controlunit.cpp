@@ -75,9 +75,19 @@ bool ControlUnit::disconnectFromServer()
 {
     qDebug() << "Control Unit" << name << "- disconnect";
     socket->disconnectFromHost();
-    if (socket->waitForDisconnected())
+    if (socket->state() == QAbstractSocket::UnconnectedState || socket->waitForDisconnected())
     {
         return true;
     }
     return false;
+}
+
+bool ControlUnit::isConnected() const
+{
+    return socket->state() == QAbstractSocket::ConnectedState;
+}
+
+bool ControlUnit::isDisconnected() const
+{
+    return socket->state() == QAbstractSocket::UnconnectedState;
 }

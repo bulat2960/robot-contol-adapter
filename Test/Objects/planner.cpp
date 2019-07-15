@@ -69,10 +69,20 @@ bool Planner::disconnectFromServer()
 {
     qDebug() << "Planner - disconnect";
     socket->disconnectFromHost();
-    if (socket->waitForDisconnected())
+    if (socket->state() == QAbstractSocket::UnconnectedState || socket->waitForDisconnected())
     {
         return true;
     }
     return false;
     //sendMsgButton->setEnabled(false);
+}
+
+bool Planner::isConnected() const
+{
+    return socket->state() == QAbstractSocket::ConnectedState;
+}
+
+bool Planner::isDisconnected() const
+{
+    return socket->state() == QAbstractSocket::UnconnectedState;
 }
