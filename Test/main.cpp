@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    QDir dir = QDir::current();
+    /*QDir dir = QDir::current();
     dir.cdUp();
     dir.cdUp();
     dir.cd("System/release");
@@ -32,9 +32,11 @@ int main(int argc, char *argv[])
         {
             return res;
         }
-    }
+    }*/
 
-    return 0;
+    auto res = QTest::qExec(new Test, argc, argv);
+
+    return res;
 
     /*const QString defaultRcaIp     = "localhost";
     const quint16 defaultRcaPort   = 5555;

@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QtTest>
 
+#include <QDir>
+#include <QProcess>
+
 #include "Objects/scene.h"
 #include "Objects/controlunit.h"
 #include "Objects/planner.h"
@@ -16,6 +19,9 @@ private:
     QString sceneIp;
     quint16 rcaPort;
     quint16 scenePort;
+
+    QString pathToRcaExec;
+    QProcess rcaProcess;
 public:
     explicit Test(QObject *parent = nullptr);
 signals:
@@ -23,6 +29,8 @@ signals:
 public slots:
 
 private slots:
+    void init();
+    void cleanup();
     void connectToRcaUnitT();
     void connectToRcaUnitF();
     void connectPlannerToRca();

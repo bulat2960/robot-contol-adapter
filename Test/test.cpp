@@ -12,6 +12,25 @@ Test::Test(QObject *parent) : QObject(parent)
     sceneIp = settings.value("HOSTS/Scene", defaultSceneIp).toString();
     rcaPort = static_cast<quint16>(settings.value("PORTS/Rca", defaultRcaPort).toInt());
     scenePort  = static_cast<quint16>(settings.value("PORTS/Scene", defaultScenePort).toInt());
+
+    QDir dir = QDir::current();
+    dir.cdUp();
+    dir.cdUp();
+    dir.cd("System/release");
+    pathToRcaExec = dir.path();
+}
+
+void Test::init()
+{
+    rcaProcess.start(pathToRcaExec + "/System", QStringList());
+    QTest::qWait(1000);
+}
+
+void Test::cleanup()
+{
+    rcaProcess.kill();
+    rcaProcess.waitForFinished();
+    QTest::qWait(1000);
 }
 
 void Test::connectToRcaUnitT()
