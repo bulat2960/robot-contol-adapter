@@ -16,16 +16,16 @@ Test::Test(QObject *parent) : QObject(parent)
 
 void Test::connectUnitToRca()
 {
-    //ControlUnit unit("t", rcaIp, rcaPort);
-    //bool isConnected = unit.connectToServer();
-    //QCOMPARE(isConnected, true);
+    ControlUnit unit("t", rcaIp, rcaPort);
+    bool isConnected = unit.connectToServer();
+    QCOMPARE(isConnected, true);
 }
 
 void Test::connectPlannerToRca()
 {
-    //Planner planner("p", rcaIp, rcaPort);
-    //bool isConnected = planner.connectToServer();
-    //QCOMPARE(isConnected, true);
+    Planner planner("p", rcaIp, rcaPort);
+    bool isConnected = planner.connectToServer();
+    QCOMPARE(isConnected, true);
 }
 
 void Test::sendMsgFromPlannerToUnitT()

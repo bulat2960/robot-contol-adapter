@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
 
     QProcess rcaProcess;
     rcaProcess.start(pathToRcaExec + "/System", QStringList());
+    QTest::qWait(1000);
 
     if (rcaProcess.waitForStarted())
     {
