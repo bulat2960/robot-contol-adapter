@@ -1,25 +1,18 @@
 ﻿#include "testwithscene.h"
 
-TestWithScene::TestWithScene(QObject *parent) : QObject(parent)
+TestWithScene::TestWithScene(QString rcaIp, QString sceneIp, quint16 rcaPort, quint16 scenePort,
+                             QString pathToRcaExec, int waitTime, QObject *parent) : QObject(parent)
 {
-    const QString defaultRcaIp     = "localhost";
-    const QString defaultSceneIp   = "localhost";
-    const quint16 defaultRcaPort   = 8000;
-    const quint16 defaultScenePort = 8080;
+    this->rcaIp = rcaIp;
+    this->sceneIp = sceneIp;
+    this->rcaPort = rcaPort;
+    this->scenePort = scenePort;
 
-    QSettings settings("../config.ini", QSettings::IniFormat);
-    rcaIp = settings.value("HOSTS/Rca", defaultRcaIp).toString();
-    sceneIp = settings.value("HOSTS/Scene", defaultSceneIp).toString();
-    rcaPort = static_cast<quint16>(settings.value("PORTS/Rca", defaultRcaPort).toInt());
-    scenePort  = static_cast<quint16>(settings.value("PORTS/Scene", defaultScenePort).toInt());
+    this->waitTime = waitTime;
 
-    QDir dir = QDir::current();
-    dir.cdUp();
-    dir.cdUp();
-    dir.cd("System/release");
-    pathToRcaExec = dir.path();
+    this->pathToRcaExec = pathToRcaExec;
 
-    waitTime = 100;
+    scene = nullptr;
 }
 
 void TestWithScene::init()

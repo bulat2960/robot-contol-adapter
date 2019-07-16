@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QtTest>
 
-#include <QDir>
 #include <QProcess>
 
 #include "Objects/scene.h"
@@ -27,7 +26,8 @@ private:
 
     int waitTime;
 public:
-    explicit TestWithScene(QObject *parent = nullptr);
+    explicit TestWithScene(QString rcaIp, QString sceneIp, quint16 rcaPort, quint16 scenePort,
+                           QString pathToRcaExec, int waitTime, QObject *parent = nullptr);
 signals:
 
 public slots:
