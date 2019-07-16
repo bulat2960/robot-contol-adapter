@@ -1,6 +1,6 @@
-﻿#include "test.h"
+﻿#include "testwithscene.h"
 
-Test::Test(QObject *parent) : QObject(parent)
+TestWithScene::TestWithScene(QObject *parent) : QObject(parent)
 {
     const QString defaultRcaIp     = "localhost";
     const QString defaultSceneIp   = "localhost";
@@ -18,103 +18,140 @@ Test::Test(QObject *parent) : QObject(parent)
     dir.cdUp();
     dir.cd("System/release");
     pathToRcaExec = dir.path();
+
+    waitTime = 100;
 }
 
-void Test::init()
+void TestWithScene::init()
 {
+    if (scene)
+    {
+        scene->deleteLater();
+    }
+    QTest::qWait(waitTime);
+    scene = new Scene(scenePort);
+
     rcaProcess.start(pathToRcaExec + "/System", QStringList());
-    QTest::qWait(1000);
+    QTest::qWait(waitTime);
 }
 
-void Test::cleanup()
+void TestWithScene::cleanup()
 {
     rcaProcess.kill();
     rcaProcess.waitForFinished();
-    QTest::qWait(1000);
+    QTest::qWait(waitTime);
 }
 
-void Test::connectToRcaUnitT()
+void TestWithScene::connectToRcaUnitT()
 {
     ControlUnit unit("t", rcaIp, rcaPort);
     bool isConnected = unit.connectToServer();
-    QTest::qWait(1000);
+    QTest::qWait(waitTime);
 
     QCOMPARE(isConnected, true);
 }
 
-void Test::connectToRcaUnitF()
+void TestWithScene::connectToRcaUnitF()
 {
     ControlUnit unit("f", rcaIp, rcaPort);
     bool isConnected = unit.connectToServer();
-    QTest::qWait(1000);
+    QTest::qWait(waitTime);
 
     QCOMPARE(isConnected, true);
 }
 
-void Test::connectPlannerToRca()
+void TestWithScene::connectPlannerToRca()
 {
     Planner planner("p", rcaIp, rcaPort);
     bool isConnected = planner.connectToServer();
-    QTest::qWait(1000);
+    QTest::qWait(waitTime);
 
     QCOMPARE(isConnected, true);
 }
 
-void Test::sendMsgFromPlannerToUnitT()
+void TestWithScene::sendMsgFromPlannerToUnitT()
 {
     Planner planner("p", rcaIp, rcaPort);
     planner.connectToServer();
     ControlUnit unit("t", rcaIp, rcaPort);
     unit.connectToServer();
-    QTest::qWait(1000);
+    QTest::qWait(waitTime);
     planner.sendMsg("t:message");
-    QTest::qWait(1000);
+    QTest::qWait(waitTime);
 
     QString msg = unit.getLastMessage();
 
     QCOMPARE("message", msg);
 }
 
-void Test::sendMsgFromPlannerToUnitF()
+void TestWithScene::sendMsgFromPlannerToUnitF()
 {
     Planner planner("p", rcaIp, rcaPort);
     planner.connectToServer();
     ControlUnit unit("f", rcaIp, rcaPort);
     unit.connectToServer();
-    QTest::qWait(1000);
+    QTest::qWait(waitTime);
     planner.sendMsg("f:message");
-    QTest::qWait(1000);
+    QTest::qWait(waitTime);
 
     QString msg = unit.getLastMessage();
 
     QCOMPARE("message", msg);
 }
 
-void Test::disconnectFromRcaUnitT()
+void TestWithScene::sendMsgFromPlannerToUnconnectedUnitT()
+{
+    Planner planner("p", rcaIp, rcaPort);
+    planner.connectToServer();
+    ControlUnit unit("t", rcaIp, rcaPort);
+    QTest::qWait(waitTime);
+    planner.sendMsg("t:message");
+    QTest::qWait(waitTime);
+
+    QString msg = unit.getLastMessage();
+
+    QVERIFY(msg.isEmpty());
+}
+
+void TestWithScene::sendMsgFromPlannerToUnconnectedUnitF()
+{
+    Planner planner("p", rcaIp, rcaPort);
+    planner.connectToServer();
+    ControlUnit unit("f", rcaIp, rcaPort);
+    QTest::qWait(waitTime);
+    planner.sendMsg("f:message");
+    QTest::qWait(waitTime);
+
+    QString msg = unit.getLastMessage();
+
+    QVERIFY(msg.isEmpty());
+}
+
+void TestWithScene::disconnectFromRcaUnitT()
 {
     ControlUnit unit("t", rcaIp, rcaPort);
     bool wasConnected = unit.connectToServer();
     bool nowDisconnected = unit.disconnectFromServer();
-    QTest::qWait(1000);
+    QTest::qWait(waitTime);
 
     bool result = (wasConnected && nowDisconnected);
 
     QCOMPARE(result, true);
 }
 
-void Test::disconnectFromRcaUnitF()
+void TestWithScene::disconnectFromRcaUnitF()
 {
     ControlUnit unit("f", rcaIp, rcaPort);
     bool wasConnected = unit.connectToServer();
     bool nowDisconnected = unit.disconnectFromServer();
-    QTest::qWait(1000);
+    QTest::qWait(waitTime);
 
     bool result = (wasConnected && nowDisconnected);
 
     QCOMPARE(result, true);
 }
 
-void Test::sendExitCmd()
+void TestWithScene::sendExitCmd()
 {
     Planner planner("p", rcaIp, rcaPort);
     bool isConnectedPlanner = planner.connectToServer();
@@ -122,9 +159,9 @@ void Test::sendExitCmd()
     bool isConnectedUnitT = unitT.connectToServer();
     ControlUnit unitF("f", rcaIp, rcaPort);
     bool isConnectedUnitF = unitF.connectToServer();
-    QTest::qWait(1000);
+    QTest::qWait(waitTime);
     planner.sendMsg("e");
-    QTest::qWait(1000);
+    QTest::qWait(waitTime);
 
     bool isDisconnectedPlanner = planner.isDisconnected();
     bool isDisconnetedUnitT = unitT.isDisconnected();

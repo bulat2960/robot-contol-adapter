@@ -32,13 +32,13 @@ SOURCES += \
     Objects/planner.cpp \
     Objects/scene.cpp \
     main.cpp \
-    test.cpp
+    testwithscene.cpp
 
 HEADERS += \
     Objects/controlunit.h \
     Objects/planner.h \
     Objects/scene.h \
-    test.h
+    testwithscene.h
 
 CONFIG(debug, debug|release) {
     DESTDIR = $$OUT_PWD/debug

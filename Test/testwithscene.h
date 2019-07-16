@@ -11,7 +11,7 @@
 #include "Objects/controlunit.h"
 #include "Objects/planner.h"
 
-class Test : public QObject
+class TestWithScene : public QObject
 {
     Q_OBJECT
 private:
@@ -22,8 +22,12 @@ private:
 
     QString pathToRcaExec;
     QProcess rcaProcess;
+
+    Scene* scene;
+
+    int waitTime;
 public:
-    explicit Test(QObject *parent = nullptr);
+    explicit TestWithScene(QObject *parent = nullptr);
 signals:
 
 public slots:
@@ -36,6 +40,8 @@ private slots:
     void connectPlannerToRca();
     void sendMsgFromPlannerToUnitT();
     void sendMsgFromPlannerToUnitF();
+    void sendMsgFromPlannerToUnconnectedUnitT();
+    void sendMsgFromPlannerToUnconnectedUnitF();
     void disconnectFromRcaUnitT();
     void disconnectFromRcaUnitF();
     void sendExitCmd();
