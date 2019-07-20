@@ -8,8 +8,9 @@
 #include "Objects/planner.h"
 #include "Objects/scene.h"
 
-#include "testwithscene.h"
-#include "testwithoutscene.h"
+#include "Tests/connectiontests.h"
+#include "Tests/reconnectiontests.h"
+#include "Tests/transfertests.h"
 
 int main(int argc, char *argv[])
 {
@@ -34,7 +35,8 @@ int main(int argc, char *argv[])
 
     int waitTime = 100;
 
-    auto res1 = QTest::qExec(new TestWithScene(rcaIp, sceneIp, rcaPort, scenePort, pathToRcaExec, waitTime), argc, argv);
-    auto res2 = QTest::qExec(new TestWithoutScene(rcaIp, sceneIp, rcaPort, scenePort, pathToRcaExec, waitTime), argc, argv);
-    return res1 + res2;
+    auto res1 = QTest::qExec(new ConnectionTests(rcaIp, sceneIp, rcaPort, scenePort, pathToRcaExec, waitTime), argc, argv);
+    auto res2 = QTest::qExec(new TransferTests(rcaIp, sceneIp, rcaPort, scenePort, pathToRcaExec, waitTime), argc, argv);
+    auto res3 = QTest::qExec(new ReconnectionTests(rcaIp, sceneIp, rcaPort, scenePort, pathToRcaExec, waitTime), argc, argv);
+    return res1 + res2 + res3;
 }

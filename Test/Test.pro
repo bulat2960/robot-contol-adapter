@@ -33,14 +33,20 @@ SOURCES += \
     Objects/scene.cpp \
     main.cpp \
     testwithscene.cpp \
-    testwithoutscene.cpp
+    testwithoutscene.cpp \
+    Tests/connectiontests.cpp \
+    Tests/reconnectiontests.cpp \
+    Tests/transfertests.cpp
 
 HEADERS += \
     Objects/controlunit.h \
     Objects/planner.h \
     Objects/scene.h \
     testwithscene.h \
-    testwithoutscene.h
+    testwithoutscene.h \
+    Tests/connectiontests.h \
+    Tests/reconnectiontests.h \
+    Tests/transfertests.h
 
 CONFIG(debug, debug|release) {
     DESTDIR = $$OUT_PWD/debug
