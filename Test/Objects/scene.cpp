@@ -51,12 +51,20 @@ void Scene::readyRead()
 
 bool Scene::isRcaConnected() const
 {
+    if (socket == nullptr)
+    {
+        return false;
+    }
     return socket->state() == QAbstractSocket::ConnectedState;
 }
 
 bool Scene::isRcaDisconnected() const
 {
-    return socket == nullptr || socket->state() == QAbstractSocket::UnconnectedState;
+    if (socket == nullptr)
+    {
+        return true;
+    }
+    return socket->state() == QAbstractSocket::UnconnectedState;
 }
 
 QString Scene::getLastMessage() const
