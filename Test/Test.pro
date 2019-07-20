@@ -32,8 +32,6 @@ SOURCES += \
     Objects/planner.cpp \
     Objects/scene.cpp \
     main.cpp \
-    testwithscene.cpp \
-    testwithoutscene.cpp \
     Tests/connectiontests.cpp \
     Tests/reconnectiontests.cpp \
     Tests/transfertests.cpp
@@ -42,8 +40,6 @@ HEADERS += \
     Objects/controlunit.h \
     Objects/planner.h \
     Objects/scene.h \
-    testwithscene.h \
-    testwithoutscene.h \
     Tests/connectiontests.h \
     Tests/reconnectiontests.h \
     Tests/transfertests.h
