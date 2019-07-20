@@ -18,7 +18,7 @@ RobotControlAdapter::RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint
     }
     else
     {
-        qDebug() << "Not listening RCA";
+        qDebug() << "Not listening RCA:" << this->errorString();
     }
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";

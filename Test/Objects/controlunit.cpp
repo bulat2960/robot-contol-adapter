@@ -47,11 +47,14 @@ void ControlUnit::readyRead()
     {
         disconnectFromServer();
     }
-    else
-    {
-        socket->write(data);
-        socket->waitForBytesWritten();
-    }  
+}
+
+void ControlUnit::sendMsgToScene(QString message)
+{
+    QByteArray arr;
+    arr.append(message);
+    socket->write(arr);
+    socket->waitForBytesWritten();
 }
 
 QString ControlUnit::getLastMessage() const

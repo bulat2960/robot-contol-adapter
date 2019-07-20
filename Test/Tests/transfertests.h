@@ -26,6 +26,8 @@ private:
     QProcess rcaProcess;
 
     int waitTime;
+
+    Scene* scene;
 signals:
 
 public slots:

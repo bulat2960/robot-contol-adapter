@@ -35,6 +35,7 @@ public slots:
     bool connectToServer();
     void sendName();
     void readyRead();
+    void sendMsgToScene(QString message);
     QString getLastMessage() const;
     bool disconnectFromServer();
 };

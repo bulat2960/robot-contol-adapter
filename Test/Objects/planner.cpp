@@ -39,6 +39,10 @@ void Planner::sendMsg(QString msg)
     arr.append(msg);
     socket->write(arr);
     socket->waitForBytesWritten();
+    if (msg == "e")
+    {
+        disconnectFromServer();
+    }
 }
 
 bool Planner::disconnectFromServer()
