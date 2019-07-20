@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     dir.cd("System/release");
     QString pathToRcaExec = dir.path();
 
-    int waitTime = 100;
+    int waitTime = 200;
 
     auto res1 = QTest::qExec(new ConnectionTests(rcaIp, sceneIp, rcaPort, scenePort, pathToRcaExec, waitTime), argc, argv);
     auto res2 = QTest::qExec(new TransferTests(rcaIp, sceneIp, rcaPort, scenePort, pathToRcaExec, waitTime), argc, argv);
