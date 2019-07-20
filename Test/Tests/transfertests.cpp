@@ -17,11 +17,6 @@ TransferTests::TransferTests(QString rcaIp, QString sceneIp, quint16 rcaPort, qu
 
 void TransferTests::init()
 {
-    if (scene)
-    {
-        scene->deleteLater();
-    }
-    QTest::qWait(waitTime);
     scene = new Scene(scenePort);
     scene->startServer();
 
@@ -31,6 +26,7 @@ void TransferTests::init()
 
 void TransferTests::cleanup()
 {
+    scene->deleteLater();
     rcaProcess.kill();
     rcaProcess.waitForFinished();
     QTest::qWait(waitTime);

@@ -3,6 +3,7 @@
 Scene::Scene(quint16 port)
 {
     this->port = port;
+    this->socket = nullptr;
 }
 
 void Scene::startServer()
@@ -19,7 +20,12 @@ void Scene::startServer()
 
 void Scene::closeServer()
 {
-    socket->close();
+    if (socket != nullptr)
+    {
+        socket->close();
+        socket->deleteLater();
+        socket = nullptr;
+    }
     qDebug() << "Now scene is not connected with RCA";
 }
 
@@ -50,7 +56,7 @@ bool Scene::isRcaConnected() const
 
 bool Scene::isRcaDisconnected() const
 {
-    return socket->state() == QAbstractSocket::UnconnectedState;
+    return socket == nullptr || socket->state() == QAbstractSocket::UnconnectedState;
 }
 
 QString Scene::getLastMessage() const

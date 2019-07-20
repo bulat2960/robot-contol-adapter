@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     QDir dir = QDir::current();
     dir.cdUp();
     dir.cdUp();
-    dir.cd("System/release");
+    dir.cd("System/debug");
     QString pathToRcaExec = dir.path();
 
     int waitTime = 100;

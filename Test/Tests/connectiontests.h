@@ -26,6 +26,8 @@ private:
     QProcess rcaProcess;
 
     int waitTime;
+
+    Scene* scene;
 signals:
 
 public slots:
@@ -38,6 +40,7 @@ private slots:
     void connectToRcaPlanner();
     void connectRcaToScene();
     void connectRcaToNotRunningScene();
+    void disconnectRcaFromScene();
     void disconnectFromRcaUnitT();
     void disconnectFromRcaUnitF();
     void disconnectFromRcaPlanner();
