@@ -35,11 +35,11 @@ public slots:
 private slots:
     void init();
     void cleanup();
-    void sendFromPlannerWithoutResponseToUnitT();
-    void sendToSceneFromUnitT();
-    void sendFromPlannerWithResponseToUnitT();
-    void sendFromPlannerToUnconnectedUnitT();
-    void sendToUnconnectedSceneFromUnitT();
+    void sendFromPlannerToUnitWithoutResponse();
+    void sendFromUnitToScene();
+    void sendFromPlannerToUnitWithResponse();
+    void sendFromPlannerToUnconnectedUnit();
+    void sendFromUnitToUnconnectedScene();
     void sendExitCmd();
 
 };

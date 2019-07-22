@@ -26,7 +26,7 @@ void TransferTests::cleanup()
     QTest::qWait(waitTime);
 }
 
-void TransferTests::sendFromPlannerWithoutResponseToUnitT()
+void TransferTests::sendFromPlannerToUnitWithoutResponse()
 {
     Planner planner("p", rcaIp, rcaPort);
     planner.connectToServer();
@@ -41,7 +41,7 @@ void TransferTests::sendFromPlannerWithoutResponseToUnitT()
     QCOMPARE(check1 && check2, true);
 }
 
-void TransferTests::sendToSceneFromUnitT()
+void TransferTests::sendFromUnitToScene()
 {
     ControlUnit unit("t", rcaIp, rcaPort);
     unit.connectToServer();
@@ -52,7 +52,7 @@ void TransferTests::sendToSceneFromUnitT()
     QCOMPARE(scene->getLastMessage(), "message");
 }
 
-void TransferTests::sendFromPlannerWithResponseToUnitT()
+void TransferTests::sendFromPlannerToUnitWithResponse()
 {
     Planner planner("p", rcaIp, rcaPort);
     planner.connectToServer();
@@ -69,7 +69,7 @@ void TransferTests::sendFromPlannerWithResponseToUnitT()
     QCOMPARE(check1 && check2, true);
 }
 
-void TransferTests::sendFromPlannerToUnconnectedUnitT()
+void TransferTests::sendFromPlannerToUnconnectedUnit()
 {
     Planner planner("p", rcaIp, rcaPort);
     planner.connectToServer();
@@ -80,7 +80,7 @@ void TransferTests::sendFromPlannerToUnconnectedUnitT()
     QCOMPARE(unit.getLastMessage().isEmpty(), true);
 }
 
-void TransferTests::sendToUnconnectedSceneFromUnitT()
+void TransferTests::sendFromUnitToUnconnectedScene()
 {
     scene->closeServer();
     ControlUnit unit("t", rcaIp, rcaPort);
