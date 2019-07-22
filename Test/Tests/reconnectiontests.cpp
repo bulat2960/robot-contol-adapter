@@ -31,7 +31,10 @@ void ReconnectionTests::reconnectUnitToRca()
     QTest::qWait(waitTime);
     bool connectedSecondTime = unit.connectToServer();
     QTest::qWait(waitTime);
-    QCOMPARE(connectedFirstTime && disconnected && connectedSecondTime, true);
+
+    QCOMPARE(connectedFirstTime, true);
+    QCOMPARE(disconnected, true);
+    QCOMPARE(connectedSecondTime, true);
 }
 
 void ReconnectionTests::reconnectPlannerToRca()
@@ -43,5 +46,8 @@ void ReconnectionTests::reconnectPlannerToRca()
     QTest::qWait(waitTime);
     bool connectedSecondTime = planner.connectToServer();
     QTest::qWait(waitTime);
-    QCOMPARE(connectedFirstTime && disconnected && connectedSecondTime, true);
+
+    QCOMPARE(connectedFirstTime, true);
+    QCOMPARE(disconnected, true);
+    QCOMPARE(connectedSecondTime, true);
 }
