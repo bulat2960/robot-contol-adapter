@@ -22,7 +22,7 @@ void ReconnectionTests::cleanup()
     QTest::qWait(waitTime);
 }
 
-void ReconnectionTests::reconnectToRcaUnitT()
+void ReconnectionTests::reconnectUnitToRca()
 {
     ControlUnit unit("t", rcaIp, rcaPort);
     bool connectedFirstTime = unit.connectToServer();
@@ -34,21 +34,9 @@ void ReconnectionTests::reconnectToRcaUnitT()
     QCOMPARE(connectedFirstTime && disconnected && connectedSecondTime, true);
 }
 
-void ReconnectionTests::reconnectToRcaUnitF()
+void ReconnectionTests::reconnectPlannerToRca()
 {
-    ControlUnit unit("f", rcaIp, rcaPort);
-    bool connectedFirstTime = unit.connectToServer();
-    QTest::qWait(waitTime);
-    bool disconnected = unit.disconnectFromServer();
-    QTest::qWait(waitTime);
-    bool connectedSecondTime = unit.connectToServer();
-    QTest::qWait(waitTime);
-    QCOMPARE(connectedFirstTime && disconnected && connectedSecondTime, true);
-}
-
-void ReconnectionTests::reconnectToRcaPlanner()
-{
-    Planner planner("f", rcaIp, rcaPort);
+    Planner planner("p", rcaIp, rcaPort);
     bool connectedFirstTime = planner.connectToServer();
     QTest::qWait(waitTime);
     bool disconnected = planner.disconnectFromServer();

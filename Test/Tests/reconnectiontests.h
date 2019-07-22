@@ -33,9 +33,8 @@ public slots:
 private slots:
     void init();
     void cleanup();
-    void reconnectToRcaUnitT();
-    void reconnectToRcaUnitF();
-    void reconnectToRcaPlanner();
+    void reconnectUnitToRca();
+    void reconnectPlannerToRca();
 };
 
 #endif // RECONNECTIONCHECKTESTS_H
