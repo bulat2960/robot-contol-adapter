@@ -36,15 +36,10 @@ private slots:
     void init();
     void cleanup();
     void sendFromPlannerWithoutResponseToUnitT();
-    void sendFromPlannerWithoutResponseToUnitF();
     void sendToSceneFromUnitT();
-    void sendToSceneFromUnitF();
     void sendFromPlannerWithResponseToUnitT();
-    void sendFromPlannerWithResponseToUnitF();
     void sendFromPlannerToUnconnectedUnitT();
-    void sendFromPlannerToUnconnectedUnitF();
     void sendToUnconnectedSceneFromUnitT();
-    void sendToUnconnectedSceneFromUnitF();
     void sendExitCmd();
 
 };

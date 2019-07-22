@@ -41,35 +41,9 @@ void TransferTests::sendFromPlannerWithoutResponseToUnitT()
     QCOMPARE(check1 && check2, true);
 }
 
-void TransferTests::sendFromPlannerWithoutResponseToUnitF()
-{
-    Planner planner("p", rcaIp, rcaPort);
-    planner.connectToServer();
-    ControlUnit unit("f", rcaIp, rcaPort);
-    unit.connectToServer();
-    QTest::qWait(waitTime);
-    planner.sendMsg("f:message");
-    QTest::qWait(waitTime);
-    bool check1 = (unit.getLastMessage() == "message");
-    bool check2 = scene->getLastMessage().isEmpty();
-
-    QCOMPARE(check1 && check2, true);
-}
-
 void TransferTests::sendToSceneFromUnitT()
 {
     ControlUnit unit("t", rcaIp, rcaPort);
-    unit.connectToServer();
-    QTest::qWait(waitTime);
-    unit.sendMsgToScene("message");
-    QTest::qWait(waitTime);
-
-    QCOMPARE(scene->getLastMessage(), "message");
-}
-
-void TransferTests::sendToSceneFromUnitF()
-{
-    ControlUnit unit("f", rcaIp, rcaPort);
     unit.connectToServer();
     QTest::qWait(waitTime);
     unit.sendMsgToScene("message");
@@ -95,23 +69,6 @@ void TransferTests::sendFromPlannerWithResponseToUnitT()
     QCOMPARE(check1 && check2, true);
 }
 
-void TransferTests::sendFromPlannerWithResponseToUnitF()
-{
-    Planner planner("p", rcaIp, rcaPort);
-    planner.connectToServer();
-    ControlUnit unit("f", rcaIp, rcaPort);
-    unit.connectToServer();
-    QTest::qWait(waitTime);
-    planner.sendMsg("f:message");
-    QTest::qWait(waitTime);
-    bool check1 = (unit.getLastMessage() == "message");
-    unit.sendMsgToScene("message");
-    QTest::qWait(waitTime);
-    bool check2 = (scene->getLastMessage() == "message");
-
-    QCOMPARE(check1 && check2, true);
-}
-
 void TransferTests::sendFromPlannerToUnconnectedUnitT()
 {
     Planner planner("p", rcaIp, rcaPort);
@@ -123,33 +80,10 @@ void TransferTests::sendFromPlannerToUnconnectedUnitT()
     QCOMPARE(unit.getLastMessage().isEmpty(), true);
 }
 
-void TransferTests::sendFromPlannerToUnconnectedUnitF()
-{
-    Planner planner("p", rcaIp, rcaPort);
-    planner.connectToServer();
-    ControlUnit unit("f", rcaIp, rcaPort);
-    QTest::qWait(waitTime);
-    planner.sendMsg("t:message");
-
-    QCOMPARE(unit.getLastMessage().isEmpty(), true);
-}
-
 void TransferTests::sendToUnconnectedSceneFromUnitT()
 {
     scene->closeServer();
     ControlUnit unit("t", rcaIp, rcaPort);
-    unit.connectToServer();
-    QTest::qWait(waitTime);
-    unit.sendMsgToScene("message");
-    QTest::qWait(waitTime);
-
-    QCOMPARE(scene->getLastMessage().isEmpty(), true);
-}
-
-void TransferTests::sendToUnconnectedSceneFromUnitF()
-{
-    scene->closeServer();
-    ControlUnit unit("f", rcaIp, rcaPort);
     unit.connectToServer();
     QTest::qWait(waitTime);
     unit.sendMsgToScene("message");
