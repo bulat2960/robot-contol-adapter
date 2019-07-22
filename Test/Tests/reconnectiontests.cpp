@@ -24,30 +24,40 @@ void ReconnectionTests::cleanup()
 
 void ReconnectionTests::reconnectUnitToRca()
 {
+    Planner planner("p", rcaIp, rcaPort);
+    planner.connectToServer();
     ControlUnit unit("t", rcaIp, rcaPort);
-    bool connectedFirstTime = unit.connectToServer();
+    bool connected = unit.connectToServer();
     QTest::qWait(waitTime);
+    planner.sendMsg("t:messageOnConnect");
+    QTest::qWait(waitTime);
+    QString receivedOnConnect = unit.getLastMessage();
     bool disconnected = unit.disconnectFromServer();
     QTest::qWait(waitTime);
-    bool connectedSecondTime = unit.connectToServer();
+    bool reconnected = unit.connectToServer();
     QTest::qWait(waitTime);
+    planner.sendMsg("t:messageOnReconnect");
+    QTest::qWait(waitTime);
+    QString receivedOnReconnect = unit.getLastMessage();
 
-    QCOMPARE(connectedFirstTime, true);
+    QCOMPARE(connected, true);
+    QCOMPARE(receivedOnConnect, "messageOnConnect");
     QCOMPARE(disconnected, true);
-    QCOMPARE(connectedSecondTime, true);
+    QCOMPARE(receivedOnReconnect, "messageOnReconnect");
+    QCOMPARE(reconnected, true);
 }
 
 void ReconnectionTests::reconnectPlannerToRca()
 {
     Planner planner("p", rcaIp, rcaPort);
-    bool connectedFirstTime = planner.connectToServer();
+    bool connected = planner.connectToServer();
     QTest::qWait(waitTime);
     bool disconnected = planner.disconnectFromServer();
     QTest::qWait(waitTime);
-    bool connectedSecondTime = planner.connectToServer();
+    bool reconnected = planner.connectToServer();
     QTest::qWait(waitTime);
 
-    QCOMPARE(connectedFirstTime, true);
+    QCOMPARE(connected, true);
     QCOMPARE(disconnected, true);
-    QCOMPARE(connectedSecondTime, true);
+    QCOMPARE(reconnected, true);
 }
