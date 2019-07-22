@@ -35,8 +35,7 @@ void Planner::sendName()
 
 void Planner::sendMsg(QString msg)
 {
-    QByteArray arr;
-    arr.append(msg);
+    QByteArray arr(msg.toUtf8());
     socket->write(arr);
     socket->waitForBytesWritten();
     if (msg == "e")

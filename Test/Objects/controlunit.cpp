@@ -51,8 +51,7 @@ void ControlUnit::readyRead()
 
 void ControlUnit::sendMsgToScene(QString message)
 {
-    QByteArray arr;
-    arr.append(message);
+    QByteArray arr(message.toUtf8());
     socket->write(arr);
     socket->waitForBytesWritten();
 }
