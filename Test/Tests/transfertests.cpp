@@ -38,7 +38,8 @@ void TransferTests::sendFromPlannerToUnitWithoutResponse()
     bool check1 = (unit.getLastMessage() == "message");
     bool check2 = scene->getLastMessage().isEmpty();
 
-    QCOMPARE(check1 && check2, true);
+    QCOMPARE(check1, true);
+    QCOMPARE(check2, true);
 }
 
 void TransferTests::sendFromUnitToScene()
@@ -66,7 +67,8 @@ void TransferTests::sendFromPlannerToUnitWithResponse()
     QTest::qWait(waitTime);
     bool check2 = (scene->getLastMessage() == "message");
 
-    QCOMPARE(check1 && check2, true);
+    QCOMPARE(check1, true);
+    QCOMPARE(check2, true);
 }
 
 void TransferTests::sendFromPlannerToUnconnectedUnit()
@@ -96,16 +98,14 @@ void TransferTests::sendExitCmd()
 {
     Planner planner("p", rcaIp, rcaPort);
     planner.connectToServer();
-    ControlUnit unitT("t", rcaIp, rcaPort);
-    unitT.connectToServer();
-    ControlUnit unitF("f", rcaIp, rcaPort);
-    unitF.connectToServer();
+    ControlUnit unit("t", rcaIp, rcaPort);
+    unit.connectToServer();
     QTest::qWait(waitTime);
     planner.sendMsg("e");
     QTest::qWait(waitTime);
-    bool check1 = unitT.isDisconnected();
-    bool check2 = unitF.isDisconnected();
-    bool check3 = planner.isDisconnected();
+    bool check1 = unit.isDisconnected();
+    bool check2 = planner.isDisconnected();
 
-    QCOMPARE(check1 && check2 && check3, true);
+    QCOMPARE(check1, true);
+    QCOMPARE(check2, true);
 }
