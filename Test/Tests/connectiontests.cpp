@@ -22,7 +22,7 @@ void ConnectionTests::cleanup()
     QTest::qWait(waitTime);
 }
 
-void ConnectionTests::connectToRcaUnitT()
+void ConnectionTests::connectUnitToRca()
 {
     rcaProcess.start(pathToRcaExec + "/System", QStringList());
     QTest::qWait(waitTime);
@@ -34,19 +34,7 @@ void ConnectionTests::connectToRcaUnitT()
     QCOMPARE(unit.isConnected(), true);
 }
 
-void ConnectionTests::connectToRcaUnitF()
-{
-    rcaProcess.start(pathToRcaExec + "/System", QStringList());
-    QTest::qWait(waitTime);
-
-    ControlUnit unit("f", rcaIp, rcaPort);
-    unit.connectToServer();
-    QTest::qWait(waitTime);
-
-    QCOMPARE(unit.isConnected(), true);
-}
-
-void ConnectionTests::connectToRcaPlanner()
+void ConnectionTests::connectPlannerToRca()
 {
     rcaProcess.start(pathToRcaExec + "/System", QStringList());
     QTest::qWait(waitTime);
@@ -89,7 +77,7 @@ void ConnectionTests::disconnectRcaFromScene()
     QCOMPARE(scene->isRcaDisconnected(), true);
 }
 
-void ConnectionTests::disconnectFromRcaUnitT()
+void ConnectionTests::disconnectUnitFromRca()
 {
     ControlUnit unit("t", rcaIp, rcaPort);
     unit.connectToServer();
@@ -100,18 +88,7 @@ void ConnectionTests::disconnectFromRcaUnitT()
     QCOMPARE(unit.isDisconnected(), true);
 }
 
-void ConnectionTests::disconnectFromRcaUnitF()
-{
-    ControlUnit unit("f", rcaIp, rcaPort);
-    unit.connectToServer();
-    QTest::qWait(waitTime);
-    unit.disconnectFromServer();
-    QTest::qWait(waitTime);
-
-    QCOMPARE(unit.isDisconnected(), true);
-}
-
-void ConnectionTests::disconnectFromRcaPlanner()
+void ConnectionTests::disconnectPlannerFromRca()
 {
     Planner planner("p", rcaIp, rcaPort);
     planner.connectToServer();

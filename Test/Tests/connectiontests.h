@@ -35,15 +35,13 @@ public slots:
 private slots:
     void init();
     void cleanup();
-    void connectToRcaUnitT();
-    void connectToRcaUnitF();
-    void connectToRcaPlanner();
+    void connectUnitToRca();
+    void connectPlannerToRca();
     void connectRcaToScene();
     void connectRcaToNotRunningScene();
     void disconnectRcaFromScene();
-    void disconnectFromRcaUnitT();
-    void disconnectFromRcaUnitF();
-    void disconnectFromRcaPlanner();
+    void disconnectUnitFromRca();
+    void disconnectPlannerFromRca();
 };
 
 #endif // CONNECTIONCHECKTESTS_H
