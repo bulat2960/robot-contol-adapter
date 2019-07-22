@@ -1,18 +1,12 @@
 #include "connectiontests.h"
 
 ConnectionTests::ConnectionTests(QString rcaIp, QString sceneIp, quint16 rcaPort, quint16 scenePort,
-                                 QString pathToRcaExec, int waitTime, QObject *parent) : QObject(parent)
+                                 QString pathToRcaExec, int waitTime, QObject *parent)
+    : QObject(parent),
+      rcaIp(rcaIp), sceneIp(sceneIp), rcaPort(rcaPort), scenePort(scenePort),
+      pathToRcaExec(pathToRcaExec), waitTime(waitTime), scene(nullptr)
 {
-    this->rcaIp = rcaIp;
-    this->sceneIp = sceneIp;
-    this->rcaPort = rcaPort;
-    this->scenePort = scenePort;
 
-    this->waitTime = waitTime;
-
-    this->pathToRcaExec = pathToRcaExec;
-
-    this->scene = nullptr;
 }
 
 void ConnectionTests::init()
