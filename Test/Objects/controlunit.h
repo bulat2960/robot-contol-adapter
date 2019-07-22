@@ -2,7 +2,6 @@
 #define CONTROLUNIT_H
 
 #include <QTcpSocket>
-//#include <QtWidgets>
 
 /**
  * It's a mock-object of ControlUnit
