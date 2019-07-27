@@ -82,6 +82,21 @@ void TransferTests::sendFromPlannerToUnconnectedUnit()
     QCOMPARE(unit.getLastMessage().isEmpty(), true);
 }
 
+void TransferTests::sendFromPlannerToMultipleUnits()
+{
+
+}
+
+void TransferTests::sendFromPlannerToMultipleUnitsWithoutDelay()
+{
+
+}
+
+void TransferTests::sendFromMultipleUnitsToScene()
+{
+
+}
+
 void TransferTests::sendFromUnitToUnconnectedScene()
 {
     scene->closeServer();

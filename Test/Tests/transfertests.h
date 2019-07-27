@@ -39,6 +39,9 @@ private slots:
     void sendFromUnitToScene();
     void sendFromPlannerToUnitWithResponse();
     void sendFromPlannerToUnconnectedUnit();
+    void sendFromPlannerToMultipleUnits();
+    void sendFromPlannerToMultipleUnitsWithoutDelay();
+    void sendFromMultipleUnitsToScene();
     void sendFromUnitToUnconnectedScene();
     void sendExitCmd();
 
