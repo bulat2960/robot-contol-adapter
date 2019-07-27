@@ -29,6 +29,7 @@ public:
     ControlUnit(QString unitName, QString rcaIp, quint16 rcaPort);
     bool isConnected() const;
     bool isDisconnected() const;
+    int messagesCount() const;
 public slots:
     // Slots for necessary actions
     bool connectToServer();

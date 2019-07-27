@@ -103,9 +103,19 @@ void TransferTests::sendFromPlannerToMultipleUnits()
 
 }
 
-void TransferTests::sendFromPlannerToMultipleUnitsWithoutDelay()
+void TransferTests::sendFromPlannerToUnitWithoutDelay()
 {
+    Planner planner("p", rcaIp, rcaPort);
+    planner.connectToServer();
+    ControlUnit unit("t", rcaIp, rcaPort);
+    unit.connectToServer();
+    QTest::qWait(waitTime);
+    planner.sendMsg("t:message1|t:message2");
+    QTest::qWait(waitTime);
 
+    qDebug() << unit.getLastMessage();
+    qDebug() << unit.messagesCount();
+    QVERIFY(unit.messagesCount() == 2);
 }
 
 void TransferTests::sendFromMultipleUnitsToScene()

@@ -61,6 +61,11 @@ QString ControlUnit::getLastMessage() const
     return receivedMessages.size() > 0 ? receivedMessages.back() : "";
 }
 
+int ControlUnit::messagesCount() const
+{
+    return receivedMessages.size();
+}
+
 bool ControlUnit::disconnectFromServer()
 {
     qDebug() << "Control Unit" << name << "- disconnect";
