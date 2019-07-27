@@ -12,6 +12,7 @@ void SceneConnector::slotSend(QByteArray msg)
     timer.restart();
 
     socket->write(msg);
+    socket->waitForBytesWritten();
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
