@@ -71,3 +71,8 @@ QString Scene::getLastMessage() const
 {
     return receivedMessages.size() > 0 ? receivedMessages.back() : "";
 }
+
+int Scene::messagesCount() const
+{
+    return receivedMessages.size();
+}

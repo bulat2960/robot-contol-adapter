@@ -113,14 +113,22 @@ void TransferTests::sendFromPlannerToUnitWithoutDelay()
     planner.sendMsg("t:message1|t:message2");
     QTest::qWait(waitTime);
 
-    qDebug() << unit.getLastMessage();
-    qDebug() << unit.messagesCount();
     QVERIFY(unit.messagesCount() == 2);
 }
 
 void TransferTests::sendFromMultipleUnitsToScene()
 {
+    ControlUnit unitT("t", rcaIp, rcaPort);
+    unitT.connectToServer();
+    QTest::qWait(waitTime);
+    ControlUnit unitF("f", rcaIp, rcaPort);
+    unitF.connectToServer();
+    QTest::qWait(waitTime);
+    unitT.sendMsgToScene("messageT");
+    unitF.sendMsgToScene("messageF");
+    QTest::qWait(waitTime);
 
+    QVERIFY(scene->messagesCount() == 2);
 }
 
 void TransferTests::sendFromUnitToUnconnectedScene()

@@ -22,6 +22,7 @@ private:
 public:
     // Basic constructor
     Scene(quint16 port);
+    int messagesCount() const;
 public slots:
     // Slots for necessary actions
     void readyRead();
