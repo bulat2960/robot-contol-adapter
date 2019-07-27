@@ -84,6 +84,22 @@ void TransferTests::sendFromPlannerToUnconnectedUnit()
 
 void TransferTests::sendFromPlannerToMultipleUnits()
 {
+    Planner planner("p", rcaIp, rcaPort);
+    planner.connectToServer();
+    ControlUnit unitT("t", rcaIp, rcaPort);
+    unitT.connectToServer();
+    QTest::qWait(waitTime);
+    ControlUnit unitF("f", rcaIp, rcaPort);
+    unitF.connectToServer();
+    QTest::qWait(waitTime);
+    planner.sendMsg("t:messageT|f:messageF");
+    QTest::qWait(waitTime);
+
+    bool check1 = unitT.getLastMessage() == "messageT";
+    bool check2 = unitF.getLastMessage() == "messageF";
+
+    QCOMPARE(check1, true);
+    QCOMPARE(check2, true);
 
 }
 
