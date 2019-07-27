@@ -60,8 +60,15 @@ void ConnectionTests::connectRcaToNotRunningScene()
 {
     rcaProcess.start(pathToRcaExec + "/System", QStringList());
     QTest::qWait(waitTime);
+    scene->startServer();
+    QTest::qWait(waitTime);
+    ControlUnit unit("t", rcaIp, rcaPort);
+    unit.connectToServer();
+    QTest::qWait(waitTime);
+    unit.sendMsgToScene("message");
+    QTest::qWait(waitTime);
 
-    QCOMPARE(scene->isRcaDisconnected(), true);
+    QVERIFY(scene->getLastMessage().isEmpty());
 }
 
 void ConnectionTests::disconnectRcaFromScene()
