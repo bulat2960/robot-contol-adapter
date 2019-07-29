@@ -113,7 +113,7 @@ void TransferTests::sendFromPlannerToUnitWithoutDelay()
     planner.sendMsg("t:message1|t:message2");
     QTest::qWait(waitTime);
 
-    QVERIFY(unit.messagesCount() == 2);
+    QVERIFY(unit.getLastMessage() == "message1message2");
 }
 
 void TransferTests::sendFromMultipleUnitsToScene()
@@ -128,7 +128,7 @@ void TransferTests::sendFromMultipleUnitsToScene()
     unitF.sendMsgToScene("messageF");
     QTest::qWait(waitTime);
 
-    QVERIFY(scene->messagesCount() == 2);
+    QVERIFY(scene->getLastMessage() == "messageTmessageF");
 }
 
 void TransferTests::sendFromUnitToUnconnectedScene()
