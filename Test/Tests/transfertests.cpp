@@ -35,11 +35,9 @@ void TransferTests::sendFromPlannerToUnitWithoutResponse()
     QTest::qWait(waitTime);
     planner.sendMsg("t:message");
     QTest::qWait(waitTime);
-    bool check1 = (unit.getLastMessage() == "message");
-    bool check2 = scene->getLastMessage().isEmpty();
 
-    QCOMPARE(check1, true);
-    QCOMPARE(check2, true);
+    QVERIFY(unit.getLastMessage() == "message");
+    QCOMPARE(scene->getLastMessage().isEmpty(), true);
 }
 
 void TransferTests::sendFromUnitToScene()
@@ -62,13 +60,13 @@ void TransferTests::sendFromPlannerToUnitWithResponse()
     QTest::qWait(waitTime);
     planner.sendMsg("t:message");
     QTest::qWait(waitTime);
-    bool check1 = (unit.getLastMessage() == "message");
+    bool unitReceivedMessageFromPlanner = (unit.getLastMessage() == "message");
     unit.sendMsgToScene("message");
     QTest::qWait(waitTime);
-    bool check2 = (scene->getLastMessage() == "message");
+    bool sceneReceivedMessageFromUnit = (scene->getLastMessage() == "message");
 
-    QCOMPARE(check1, true);
-    QCOMPARE(check2, true);
+    QVERIFY(unitReceivedMessageFromPlanner);
+    QVERIFY(sceneReceivedMessageFromUnit);
 }
 
 void TransferTests::sendFromPlannerToUnconnectedUnit()
@@ -117,6 +115,8 @@ void TransferTests::sendFromPlannerToUnitWithoutDelay()
     QTest::qWait(waitTime);
     planner.sendMsg("t:message1|t:message2");
     QTest::qWait(waitTime);
+
+    // Fix on units
 
     QVERIFY(unit.getLastMessage() == "message1message2");
 }
