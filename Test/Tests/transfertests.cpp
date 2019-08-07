@@ -158,11 +158,11 @@ void TransferTests::sendExitCmd()
     QTest::qWait(waitTime);
     planner.sendMsg("e");
     QTest::qWait(waitTime);
-    bool check1 = unit.isDisconnected();
-    bool check2 = planner.isDisconnected();
+    bool unitDisconnected = unit.isDisconnected();
+    bool plannerDisconnected = planner.isDisconnected();
+    bool rcaDicsonnected = (rcaProcess.state() == QProcess::NotRunning);
 
-    // How to check RCA disconnection?
-
-    QCOMPARE(check1, true);
-    QCOMPARE(check2, true);
+    QCOMPARE(unitDisconnected, true);
+    QCOMPARE(plannerDisconnected, true);
+    QCOMPARE(rcaDicsonnected, true);
 }
