@@ -81,6 +81,7 @@ void ConnectionTests::disconnectRcaFromScene()
     rcaProcess.waitForFinished();
     QTest::qWait(waitTime);
 
+    QVERIFY(rcaProcess.state() == QProcess::NotRunning);
     QCOMPARE(scene->isRcaDisconnected(), true);
 }
 
