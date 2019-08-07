@@ -73,15 +73,21 @@ void TransferTests::sendFromPlannerToUnitWithResponse()
 
 void TransferTests::sendFromPlannerToUnconnectedUnit()
 {
-    // Marked useless?
-
     Planner planner("p", rcaIp, rcaPort);
     planner.connectToServer();
     ControlUnit unit("t", rcaIp, rcaPort);
     QTest::qWait(waitTime);
-    planner.sendMsg("t:message");
+    planner.sendMsg("t:message1");
+    QTest::qWait(waitTime);
+    bool unconnectedUnitNotReceivedMessage = unit.getLastMessage().isEmpty();
+    unit.connectToServer();
+    QTest::qWait(waitTime);
+    planner.sendMsg("t:message2");
+    QTest::qWait(waitTime);
+    bool connectedUnitGotMessage = unit.getLastMessage() == "message2";
 
-    QCOMPARE(unit.getLastMessage().isEmpty(), true);
+    QCOMPARE(unconnectedUnitNotReceivedMessage, true);
+    QCOMPARE(connectedUnitGotMessage, true);
 }
 
 void TransferTests::sendFromPlannerToMultipleUnits()
