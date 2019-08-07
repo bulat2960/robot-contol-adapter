@@ -73,6 +73,8 @@ void TransferTests::sendFromPlannerToUnitWithResponse()
 
 void TransferTests::sendFromPlannerToUnconnectedUnit()
 {
+    // Marked useless?
+
     Planner planner("p", rcaIp, rcaPort);
     planner.connectToServer();
     ControlUnit unit("t", rcaIp, rcaPort);
@@ -128,6 +130,8 @@ void TransferTests::sendFromMultipleUnitsToScene()
     unitF.sendMsgToScene("messageF");
     QTest::qWait(waitTime);
 
+    // How to fix it?
+
     QVERIFY(scene->getLastMessage() == "messageTmessageF");
 }
 
@@ -139,6 +143,8 @@ void TransferTests::sendFromUnitToUnconnectedScene()
     QTest::qWait(waitTime);
     unit.sendMsgToScene("message");
     QTest::qWait(waitTime);
+
+    // Add scene reconnection, send message from unit, check lastMsg() == last_sent
 
     QCOMPARE(scene->getLastMessage().isEmpty(), true);
 }
@@ -154,6 +160,8 @@ void TransferTests::sendExitCmd()
     QTest::qWait(waitTime);
     bool check1 = unit.isDisconnected();
     bool check2 = planner.isDisconnected();
+
+    // How to check RCA disconnection?
 
     QCOMPARE(check1, true);
     QCOMPARE(check2, true);

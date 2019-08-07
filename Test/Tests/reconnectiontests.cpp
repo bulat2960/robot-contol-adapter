@@ -49,6 +49,8 @@ void ReconnectionTests::reconnectUnitToRca()
 
 void ReconnectionTests::reconnectPlannerToRca()
 {
+    // Add messages transfer check
+
     Planner planner("p", rcaIp, rcaPort);
     bool connected = planner.connectToServer();
     QTest::qWait(waitTime);
