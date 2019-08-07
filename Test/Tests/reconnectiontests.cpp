@@ -49,17 +49,29 @@ void ReconnectionTests::reconnectUnitToRca()
 
 void ReconnectionTests::reconnectPlannerToRca()
 {
-    // Add messages transfer check
-
+    ControlUnit unit("t", rcaIp, rcaPort);
+    unit.connectToServer();
     Planner planner("p", rcaIp, rcaPort);
     bool connected = planner.connectToServer();
     QTest::qWait(waitTime);
+    planner.sendMsg("t:123");
+    QTest::qWait(waitTime);
+    bool afterConnectCorrectState = (unit.getLastMessage() == "123" && unit.messagesCount() == 1);
     bool disconnected = planner.disconnectFromServer();
     QTest::qWait(waitTime);
+    planner.sendMsg("t:456");
+    QTest::qWait(waitTime);
+    bool afterDisconnectCorrectState = (unit.getLastMessage() == "123" && unit.messagesCount() == 1);
     bool reconnected = planner.connectToServer();
     QTest::qWait(waitTime);
+    planner.sendMsg("t:789");
+    QTest::qWait(waitTime);
+    bool afterReconnectCorrectState = (unit.getLastMessage() == "789" && unit.messagesCount() == 2);
 
     QCOMPARE(connected, true);
     QCOMPARE(disconnected, true);
     QCOMPARE(reconnected, true);
+    QCOMPARE(afterConnectCorrectState, true);
+    QCOMPARE(afterDisconnectCorrectState, true);
+    QCOMPARE(afterReconnectCorrectState, true);
 }
