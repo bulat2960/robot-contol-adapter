@@ -97,11 +97,8 @@ void TransferTests::sendFromPlannerToMultipleUnits()
     planner.sendMsg("t:messageT|f:messageF");
     QTest::qWait(waitTime);
 
-    bool check1 = unitT.getLastMessage() == "messageT";
-    bool check2 = unitF.getLastMessage() == "messageF";
-
-    QCOMPARE(check1, true);
-    QCOMPARE(check2, true);
+    QCOMPARE(unitT.getLastMessage(), "messageT");
+    QCOMPARE(unitF.getLastMessage(), "messageF");
 
 }
 
