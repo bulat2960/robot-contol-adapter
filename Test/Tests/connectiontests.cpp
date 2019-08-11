@@ -68,6 +68,7 @@ void ConnectionTests::connectRcaToNotRunningScene()
     unit.sendMsgToScene("message");
     QTest::qWait(waitTime);
 
+    QVERIFY(rcaProcess.state() == QProcess::Running);
     QVERIFY(scene->getLastMessage().isEmpty());
 }
 
