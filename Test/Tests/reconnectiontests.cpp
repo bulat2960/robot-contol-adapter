@@ -11,12 +11,14 @@ ReconnectionTests::ReconnectionTests(QString rcaIp, QString sceneIp, quint16 rca
 
 void ReconnectionTests::init()
 {
+    scene = new Scene(scenePort);
     rcaProcess.start(pathToRcaExec + "/System", QStringList());
     QTest::qWait(waitTime);
 }
 
 void ReconnectionTests::cleanup()
 {
+    scene->deleteLater();
     rcaProcess.kill();
     rcaProcess.waitForFinished();
     QTest::qWait(waitTime);
@@ -45,6 +47,30 @@ void ReconnectionTests::reconnectUnitToRca()
     QCOMPARE(disconnected, true);
     QCOMPARE(receivedOnReconnect, "messageOnReconnect");
     QCOMPARE(reconnected, true);
+}
+
+void ReconnectionTests::reconnectRcaToScene()
+{
+    scene->closeServer();
+    ControlUnit unit("t", rcaIp, rcaPort);
+    unit.connectToServer();
+    QTest::qWait(waitTime);
+    unit.sendMsgToScene("message1");
+    QTest::qWait(waitTime);
+    scene->startServer();
+    QTest::qWait(waitTime);
+    rcaProcess.kill();
+    rcaProcess.waitForFinished();
+    QTest::qWait(waitTime);
+    rcaProcess.start(pathToRcaExec + "/System", QStringList());
+    QTest::qWait(waitTime);
+    unit.connectToServer();
+    QTest::qWait(waitTime);
+    unit.sendMsgToScene("message2");
+    QTest::qWait(waitTime);
+
+    QVERIFY(scene->messagesCount() == 1);
+    QCOMPARE(scene->getLastMessage(), "message2");
 }
 
 void ReconnectionTests::reconnectPlannerToRca()

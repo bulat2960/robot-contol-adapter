@@ -138,20 +138,6 @@ void TransferTests::sendFromMultipleUnitsToScene()
     QVERIFY(scene->getLastMessage() == "messageTmessageF");
 }
 
-void TransferTests::sendFromUnitToUnconnectedScene()
-{
-    scene->closeServer();
-    ControlUnit unit("t", rcaIp, rcaPort);
-    unit.connectToServer();
-    QTest::qWait(waitTime);
-    unit.sendMsgToScene("message");
-    QTest::qWait(waitTime);
-
-    // Add scene reconnection, send message from unit, check lastMsg() == last_sent
-
-    QCOMPARE(scene->getLastMessage().isEmpty(), true);
-}
-
 void TransferTests::sendExitCmd()
 {
     Planner planner("p", rcaIp, rcaPort);

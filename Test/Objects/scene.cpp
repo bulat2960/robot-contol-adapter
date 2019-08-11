@@ -20,6 +20,10 @@ void Scene::startServer()
 
 void Scene::closeServer()
 {
+    this->close();
+
+    disconnect(socket, &QTcpSocket::readyRead, this, &Scene::readyRead);
+
     if (socket != nullptr)
     {
         socket->close();
