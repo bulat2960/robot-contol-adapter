@@ -59,8 +59,6 @@ void ReconnectionTests::reconnectRcaToScene()
     QTest::qWait(waitTime);
     scene->startServer();
     QTest::qWait(waitTime);
-    unit.connectToServer();
-    QTest::qWait(waitTime);
     unit.sendMsgToScene("message2");
     QTest::qWait(waitTime);
 
