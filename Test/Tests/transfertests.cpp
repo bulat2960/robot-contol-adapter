@@ -116,8 +116,6 @@ void TransferTests::sendFromPlannerToUnitWithoutDelay()
     planner.sendMsg("t:message1|t:message2");
     QTest::qWait(waitTime);
 
-    // Fix on units
-
     QVERIFY(unit.getLastMessage() == "message1message2");
 }
 
@@ -132,8 +130,6 @@ void TransferTests::sendFromMultipleUnitsToScene()
     unitT.sendMsgToScene("messageT");
     unitF.sendMsgToScene("messageF");
     QTest::qWait(waitTime);
-
-    // How to fix it?
 
     QVERIFY(scene->getLastMessage() == "messageTmessageF");
 }
