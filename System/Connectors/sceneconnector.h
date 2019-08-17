@@ -3,12 +3,21 @@
 
 #include <QTcpSocket>
 #include <QTime>
+#include <QTimeLine>
 
 class SceneConnector : public QObject
 {
     Q_OBJECT
 private:
     QTcpSocket* socket;
+
+    QString ip;
+    quint16 port;
+
+    QTimeLine reconnectTimer;
+    int connectionTimes;
+
+    QVector<QByteArray> unsentMessages;
 public:
     SceneConnector(QString ip, quint16 port);
 
@@ -21,6 +30,7 @@ public:
 
 public slots:
     void slotSend(QByteArray msg);
+    void slotSendAgain();
 };
 
 #endif // SCENECONNECTOR_H

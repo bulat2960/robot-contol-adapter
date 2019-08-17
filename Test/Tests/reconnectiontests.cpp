@@ -59,18 +59,12 @@ void ReconnectionTests::reconnectRcaToScene()
     QTest::qWait(waitTime);
     scene->startServer();
     QTest::qWait(waitTime);
-    rcaProcess.kill();
-    rcaProcess.waitForFinished();
-    QTest::qWait(waitTime);
-    rcaProcess.start(pathToRcaExec + "/System", QStringList());
-    QTest::qWait(waitTime);
     unit.connectToServer();
     QTest::qWait(waitTime);
     unit.sendMsgToScene("message2");
     QTest::qWait(waitTime);
 
-    QVERIFY(scene->messagesCount() == 1);
-    QCOMPARE(scene->getLastMessage(), "message2");
+    QVERIFY(scene->messagesCount() == 2);
 }
 
 void ReconnectionTests::reconnectPlannerToRca()

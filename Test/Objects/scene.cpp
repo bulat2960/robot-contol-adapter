@@ -20,16 +20,16 @@ void Scene::startServer()
 
 void Scene::closeServer()
 {
-    this->close();
-
-    disconnect(socket, &QTcpSocket::readyRead, this, &Scene::readyRead);
-
     if (socket != nullptr)
     {
+        disconnect(socket, &QTcpSocket::readyRead, this, &Scene::readyRead);
         socket->close();
         socket->deleteLater();
         socket = nullptr;
     }
+
+    this->close();
+
     qDebug() << "Now scene is not connected with RCA";
 }
 
