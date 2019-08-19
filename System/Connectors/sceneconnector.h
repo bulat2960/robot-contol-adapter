@@ -15,11 +15,14 @@ private:
     quint16 port;
 
     QTimeLine reconnectTimer;
-    int connectionTimes;
+    int reconnectTimes;
+    int untilReconnectDuration;
+
+    int attemptsToReconnect;
 
     QVector<QByteArray> unsentMessages;
 public:
-    SceneConnector(QString ip, quint16 port);
+    SceneConnector(QString ip, quint16 port, int untilReconnectDuration, int reconnectTimes);
 
     SceneConnector(const SceneConnector&) = delete;
     SceneConnector& operator=(const SceneConnector&) = delete;

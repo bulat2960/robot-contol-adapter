@@ -91,18 +91,22 @@ int main(int argc, char *argv[])
     const QString defaultSceneIp   = "localhost";
     const quint16 defaultRcaPort   = 8000;
     const quint16 defaultScenePort = 8080;
+    const int defaultUntilReconnectDuration = 200;
+    const int defaultReconnectTimes = 5;
 	
     QSettings settings("../config.ini", QSettings::IniFormat);
     QString sceneIp = settings.value("HOSTS/Scene", defaultSceneIp).toString();
     quint16 rcaPort = static_cast<quint16>(settings.value("PORTS/Rca", defaultRcaPort).toInt());
     quint16 scenePort = static_cast<quint16>(settings.value("PORTS/Scene", defaultScenePort).toInt());
+    int untilReconnectDuration = settings.value("RECONNETION/Duration", defaultUntilReconnectDuration).toInt();
+    int reconnectTimes = settings.value("RECONNECTION/Times", defaultReconnectTimes).toInt();
 
     QString log = QDir::homePath() + "/" + settings.value("FILES/Log").toString();
     LoggerSingleton::instance().addFile(log);
 
     qInstallMessageHandler(messageHandler);
 
-    RobotControlAdapter RCA(rcaPort, sceneIp, scenePort);
+    RobotControlAdapter RCA(rcaPort, sceneIp, scenePort, untilReconnectDuration, reconnectTimes);
     QObject::connect(&RCA, &RobotControlAdapter::signalShutdown, &a, QCoreApplication::quit);
 
     return a.exec();

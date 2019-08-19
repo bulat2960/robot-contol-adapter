@@ -1,6 +1,7 @@
 ﻿#include "robotcontroladapter.h"
 
-RobotControlAdapter::RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint16 scenePort)
+RobotControlAdapter::RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint16 scenePort,
+                                         int untilReconnectDuration, int reconnectTimes)
 {
     QTime timer;
     timer.restart();
@@ -9,7 +10,7 @@ RobotControlAdapter::RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint
 
     // Init scene socket and try to connect
     qInfo() << "Create scene connector";
-    sceneConnector = new SceneConnector(sceneIp, scenePort);
+    sceneConnector = new SceneConnector(sceneIp, scenePort, untilReconnectDuration, reconnectTimes);
 
     // Start listening
     if (this->listen(QHostAddress::Any, rcaPort))

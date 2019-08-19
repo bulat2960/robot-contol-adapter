@@ -1,16 +1,19 @@
 ﻿#include "sceneconnector.h"
 
-SceneConnector::SceneConnector(QString ip, quint16 port)
+SceneConnector::SceneConnector(QString ip, quint16 port, int untilReconnectDuration, int reconnectTimes)
 {
     this->ip = ip;
-
-    connectionTimes = 0;
     this->port = port;
+
+    this->untilReconnectDuration = untilReconnectDuration;
+    this->reconnectTimes = reconnectTimes;
+
+    this->attemptsToReconnect = 0;
 
     socket = new QTcpSocket(this);
     socket->connectToHost(ip, port);
 
-    reconnectTimer.setDuration(200); // Magic constant?
+    reconnectTimer.setDuration(untilReconnectDuration);
     connect(&reconnectTimer, &QTimeLine::finished, this, &SceneConnector::slotSendAgain);
 }
 
@@ -23,16 +26,16 @@ void SceneConnector::slotSend(QByteArray msg)
     {
         socket->connectToHost(ip, port);
 
-        if (connectionTimes < 5) // Magic constant?
+        if (attemptsToReconnect < reconnectTimes)
         {
-            connectionTimes++;
+            attemptsToReconnect++;
             reconnectTimer.start();
             unsentMessages.push_back(msg);
         }
     }
     else if (socket->waitForConnected())
     {
-        connectionTimes = 0;
+        attemptsToReconnect = 0;
         socket->write(msg);
         socket->waitForBytesWritten();
     }
