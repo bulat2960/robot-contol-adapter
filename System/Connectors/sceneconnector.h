@@ -30,6 +30,8 @@ public:
     SceneConnector& operator=(SceneConnector&&) = delete;
 
     ~SceneConnector();
+public:
+    bool isConnectedWithScene();
 
 public slots:
     void slotSend(QByteArray msg);

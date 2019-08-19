@@ -22,32 +22,61 @@ void SceneConnector::slotSend(QByteArray msg)
     QTime timer;
     timer.restart();
 
-    if (socket->state() == QAbstractSocket::UnconnectedState)
-    {
-        socket->connectToHost(ip, port);
-
-        if (attemptsToReconnect < reconnectTimes)
-        {
-            attemptsToReconnect++;
-            reconnectTimer.start();
-            unsentMessages.push_back(msg);
-        }
-    }
-    else if (socket->waitForConnected())
+    if (isConnectedWithScene())
     {
         attemptsToReconnect = 0;
         socket->write(msg);
         socket->waitForBytesWritten();
     }
+    else
+    {
+        attemptsToReconnect++;
+
+        if (reconnectTimer.state() == QTimeLine::Running)
+        {
+            reconnectTimer.stop();
+        }
+        reconnectTimer.start();
+
+        if (attemptsToReconnect < reconnectTimes)
+        {
+            unsentMessages.push_back(msg);
+        }
+    }
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
 }
 
+bool SceneConnector::isConnectedWithScene()
+{
+    if (socket->state() == QAbstractSocket::UnconnectedState)
+    {
+        socket->connectToHost(ip, port);
+        if (!socket->waitForConnected())
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 void SceneConnector::slotSendAgain()
 {
-    QByteArray s = unsentMessages.front();
-    unsentMessages.pop_front();
-    slotSend(s);
+    if (isConnectedWithScene())
+    {
+        while (!unsentMessages.empty())
+        {
+            QByteArray s = unsentMessages.front();
+            unsentMessages.pop_front();
+            socket->write(s);
+            socket->waitForBytesWritten();
+        }
+    }
+    else
+    {
+        reconnectTimer.start();
+    }
 }
 
 SceneConnector::~SceneConnector()
