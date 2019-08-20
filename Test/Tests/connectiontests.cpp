@@ -24,36 +24,36 @@ void ConnectionTests::cleanup()
 
 void ConnectionTests::connectUnitToRca()
 {
-    /*rcaProcess.start(pathToRcaExec + "/System", QStringList());
+    rcaProcess.start(pathToRcaExec + "/System", QStringList());
     QTest::qWait(waitTime);
 
     ControlUnit unit("t", rcaIp, rcaPort);
     unit.connectToServer();
     QTest::qWait(waitTime);
 
-    QCOMPARE(unit.isConnected(), true);*/
+    QCOMPARE(unit.isConnected(), true);
 }
 
 void ConnectionTests::connectPlannerToRca()
 {
-    /*rcaProcess.start(pathToRcaExec + "/System", QStringList());
+    rcaProcess.start(pathToRcaExec + "/System", QStringList());
     QTest::qWait(waitTime);
 
     Planner planner("p", rcaIp, rcaPort);
     planner.connectToServer();
     QTest::qWait(waitTime);
 
-    QCOMPARE(planner.isConnected(), true);*/
+    QCOMPARE(planner.isConnected(), true);
 }
 
 void ConnectionTests::connectRcaToScene()
 {
-    /*scene->startServer();
+    scene->startServer();
     QTest::qWait(waitTime);
     rcaProcess.start(pathToRcaExec + "/System", QStringList());
     QTest::qWait(waitTime);
 
-    QCOMPARE(scene->isRcaConnected(), true);*/
+    QCOMPARE(scene->isRcaConnected(), true);
 }
 
 void ConnectionTests::connectRcaToNotRunningScene()
@@ -76,7 +76,7 @@ void ConnectionTests::connectRcaToNotRunningScene()
 
 void ConnectionTests::disconnectRcaFromScene()
 {
-    /*scene->startServer();
+    scene->startServer();
     QTest::qWait(waitTime);
     rcaProcess.start(pathToRcaExec + "/System", QStringList());
     QTest::qWait(waitTime);
@@ -85,27 +85,27 @@ void ConnectionTests::disconnectRcaFromScene()
     QTest::qWait(waitTime);
 
     QVERIFY(rcaProcess.state() == QProcess::NotRunning);
-    QCOMPARE(scene->isRcaDisconnected(), true);*/
+    QCOMPARE(scene->isRcaDisconnected(), true);
 }
 
 void ConnectionTests::disconnectUnitFromRca()
 {
-    /*ControlUnit unit("t", rcaIp, rcaPort);
+    ControlUnit unit("t", rcaIp, rcaPort);
     unit.connectToServer();
     QTest::qWait(waitTime);
     unit.disconnectFromServer();
     QTest::qWait(waitTime);
 
-    QCOMPARE(unit.isDisconnected(), true);*/
+    QCOMPARE(unit.isDisconnected(), true);
 }
 
 void ConnectionTests::disconnectPlannerFromRca()
 {
-    /*Planner planner("p", rcaIp, rcaPort);
+    Planner planner("p", rcaIp, rcaPort);
     planner.connectToServer();
     QTest::qWait(waitTime);
     planner.disconnectFromServer();
     QTest::qWait(waitTime);
 
-    QCOMPARE(planner.isDisconnected(), true);*/
+    QCOMPARE(planner.isDisconnected(), true);
 }
