@@ -34,7 +34,7 @@ private:
 
 public:
     // Basic constructor
-    RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint16 scenePort);
+    RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint16 scenePort, int untilReconnectDuration, int reconnectTimes);
 
     RobotControlAdapter(const RobotControlAdapter&) = delete;
     RobotControlAdapter& operator=(const RobotControlAdapter&) = delete;

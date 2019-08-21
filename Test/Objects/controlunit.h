@@ -2,7 +2,6 @@
 #define CONTROLUNIT_H
 
 #include <QTcpSocket>
-#include <QtWidgets>
 
 /**
  * It's a mock-object of ControlUnit
@@ -10,7 +9,7 @@
  * He will be able to turn the message into JSON-packet soon (in development)
 **/
 
-class ControlUnit : public QWidget // Inherited from QWidget, can create simple window with buttons
+class ControlUnit : public QObject
 {
     Q_OBJECT
 private:
@@ -21,21 +20,24 @@ private:
     // Allows connect to server
     QTcpSocket* socket;
 
-    // Interactive buttons
-    QPushButton* connectButton;
-    QPushButton* disconnectButton;
-
     // Contains unit name
     QByteArray name;
+
+    QVector<QString> receivedMessages;
 public:
     // Basic constructor
     ControlUnit(QString unitName, QString rcaIp, quint16 rcaPort);
+    bool isConnected() const;
+    bool isDisconnected() const;
+    int messagesCount() const;
 public slots:
     // Slots for necessary actions
-    void connectToServer();
+    bool connectToServer();
     void sendName();
     void readyRead();
-    void disconnectFromServer();
+    void sendMsgToScene(QString message);
+    QString getLastMessage() const;
+    bool disconnectFromServer();
 };
 
 #endif // CONTROLUNIT_H

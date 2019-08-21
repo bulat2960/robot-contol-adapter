@@ -1,6 +1,7 @@
 ﻿#include "robotcontroladapter.h"
 
-RobotControlAdapter::RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint16 scenePort)
+RobotControlAdapter::RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint16 scenePort,
+                                         int untilReconnectDuration, int reconnectTimes)
 {
     QTime timer;
     timer.restart();
@@ -9,7 +10,7 @@ RobotControlAdapter::RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint
 
     // Init scene socket and try to connect
     qInfo() << "Create scene connector";
-    sceneConnector = new SceneConnector(sceneIp, scenePort);
+    sceneConnector = new SceneConnector(sceneIp, scenePort, untilReconnectDuration, reconnectTimes);
 
     // Start listening
     if (this->listen(QHostAddress::Any, rcaPort))
@@ -18,7 +19,7 @@ RobotControlAdapter::RobotControlAdapter(quint16 rcaPort, QString sceneIp, quint
     }
     else
     {
-        qDebug() << "Not listening RCA";
+        qDebug() << "Not listening RCA:" << this->errorString();
     }
 
     qDebug() << "Elapsed" << timer.elapsed() << "ms";
@@ -140,8 +141,14 @@ RobotControlAdapter::~RobotControlAdapter()
     timer.restart();
 
     // Delete all connectors
-    sceneConnector->deleteLater();
-    plannerConnector->deleteLater();
+    if (sceneConnector)
+    {
+        sceneConnector->deleteLater();
+    }
+    if (plannerConnector)
+    {
+        plannerConnector->deleteLater();
+    }
 
     for (const auto& unitConnector : unitConnectors)
     {

@@ -1,4 +1,4 @@
-﻿#include <QApplication>
+﻿#include <QCoreApplication>
 #include <QFile>
 #include <QDateTime>
 #include <QSettings>
@@ -86,27 +86,28 @@ void messageHandler(QtMsgType type, const QMessageLogContext& context, const QSt
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QCoreApplication a(argc, argv);
 
     const QString defaultSceneIp   = "localhost";
-    const quint16 defaultRcaPort   = 5555;
-    const quint16 defaultScenePort = 6666;
-
-
-    qInstallMessageHandler(messageHandler);
+    const quint16 defaultRcaPort   = 8000;
+    const quint16 defaultScenePort = 8080;
+    const int defaultUntilReconnectDuration = 200;
+    const int defaultReconnectTimes = 5;
 	
-    QSettings settings("config.ini", QSettings::IniFormat);
+    QSettings settings("../config.ini", QSettings::IniFormat);
     QString sceneIp = settings.value("HOSTS/Scene", defaultSceneIp).toString();
     quint16 rcaPort = static_cast<quint16>(settings.value("PORTS/Rca", defaultRcaPort).toInt());
-    quint16 scenePort  = static_cast<quint16>(settings.value("PORTS/Scene", defaultScenePort).toInt());
+    quint16 scenePort = static_cast<quint16>(settings.value("PORTS/Scene", defaultScenePort).toInt());
+    int untilReconnectDuration = settings.value("RECONNETION/Duration", defaultUntilReconnectDuration).toInt();
+    int reconnectTimes = settings.value("RECONNECTION/Times", defaultReconnectTimes).toInt();
 
     QString log = QDir::homePath() + "/" + settings.value("FILES/Log").toString();
     LoggerSingleton::instance().addFile(log);
 
     qInstallMessageHandler(messageHandler);
 
-    RobotControlAdapter RCA(rcaPort, sceneIp, scenePort);
-    QObject::connect(&RCA, &RobotControlAdapter::signalShutdown, &a, QApplication::quit);
+    RobotControlAdapter RCA(rcaPort, sceneIp, scenePort, untilReconnectDuration, reconnectTimes);
+    QObject::connect(&RCA, &RobotControlAdapter::signalShutdown, &a, QCoreApplication::quit);
 
     return a.exec();
 }

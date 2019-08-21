@@ -4,9 +4,10 @@
 #
 #-------------------------------------------------
 
-QT       += core network
+QT       += core network testlib
+QT -= gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+# greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Test
 TEMPLATE = app
@@ -22,22 +23,34 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-CONFIG += c++11
+CONFIG += c++11 console
+CONFIG -= app_bundle
+CONFIG += testcase
 
 SOURCES += \
     Objects/controlunit.cpp \
     Objects/planner.cpp \
     Objects/scene.cpp \
-    main.cpp
+    main.cpp \
+    Tests/connectiontests.cpp \
+    Tests/reconnectiontests.cpp \
+    Tests/transfertests.cpp
 
 HEADERS += \
     Objects/controlunit.h \
     Objects/planner.h \
-    Objects/scene.h
+    Objects/scene.h \
+    Tests/connectiontests.h \
+    Tests/reconnectiontests.h \
+    Tests/transfertests.h
 
-CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
-CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
-install_it.path = $$DESTDIR
+CONFIG(debug, debug|release) {
+    DESTDIR = $$OUT_PWD/debug
+}else {
+    DESTDIR = $$OUT_PWD/release
+}
+
+install_it.path = $$OUT_PWD
 install_it.files += $$PWD/../config.ini
 INSTALLS += install_it
 
