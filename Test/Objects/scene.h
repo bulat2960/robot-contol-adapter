@@ -1,4 +1,4 @@
-#ifndef SCENE_H
+﻿#ifndef SCENE_H
 #define SCENE_H
 
 #include <QTcpServer>
@@ -14,16 +14,25 @@ class Scene : public QTcpServer // Simple tcp server
 {
     Q_OBJECT
 private:
-    quint16 port;
     // Socket for connect to RCA
-    QTcpSocket* rcaSocket;
+    QTcpSocket* socket;
+    quint16 port;
+
+    QVector<QString> receivedMessages;
 public:
     // Basic constructor
     Scene(quint16 port);
+    int messagesCount() const;
 public slots:
     // Slots for necessary actions
-    void incomingConnection(int socketDescriptor);
     void readyRead();
+    void startServer();
+    void closeServer();
+    QString getLastMessage() const;
+    bool isRcaConnected() const;
+    bool isRcaDisconnected() const;
+protected:
+    void incomingConnection(qintptr socketDescriptor) override;
 };
 
 #endif // SCENE_H

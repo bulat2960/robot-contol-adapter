@@ -5,8 +5,7 @@
 #-------------------------------------------------
 
 QT       += core network
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT -= widgets gui
 
 TARGET = System
 TEMPLATE = app
@@ -26,14 +25,24 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    RobotControlAdapter/robotcontroladapter.cpp
+    RobotControlAdapter/robotcontroladapter.cpp \
+    Connectors/controlunitconnector.cpp \
+    Connectors/sceneconnector.cpp \
+    Connectors/plannerconnector.cpp
 
 HEADERS += \
-    RobotControlAdapter/robotcontroladapter.h
+    RobotControlAdapter/robotcontroladapter.h \
+    Connectors/controlunitconnector.h \
+    Connectors/sceneconnector.h \
+    Connectors/plannerconnector.h
 
-CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
-CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
-install_it.path = $$DESTDIR
+CONFIG(debug, debug|release) {
+    DESTDIR = $$OUT_PWD/debug
+}else {
+    DESTDIR = $$OUT_PWD/release
+}
+
+install_it.path = $$OUT_PWD
 install_it.files += $$PWD/../config.ini
 INSTALLS += install_it
 
