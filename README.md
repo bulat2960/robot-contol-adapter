@@ -6,13 +6,14 @@
 
 1. ubuntu trusty
 2. windows 10
-3. ...
+3. debian
+4. ...
 
-## dependencyes 
+## dependencies 
 
 Зависимости которые должны быть поставлены перед сборкой проекта.
 
-1. qt5.9
+1. qt5.11
 
 ## How to build
 
